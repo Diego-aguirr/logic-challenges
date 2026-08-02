@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practica Lógica con JS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f0f1a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      padding: 20px 30px;
+      border-bottom: 2px solid #0f3460;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: #00d4ff;
+    }
+
+    header span {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: calc(100vh - 70px);
+    }
+
+    /* PANEL IZQUIERDO - EDITOR */
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #0f3460;
+    }
+
+    .panel-header {
+      background: #1a1a2e;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .panel-header h2 {
+      font-size: 0.95rem;
+      color: #00d4ff;
+    }
+
+    .file-tabs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .file-tab {
+      padding: 5px 12px;
+      background: #16213e;
+      border: 1px solid #0f3460;
+      color: #888;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-radius: 4px 4px 0 0;
+      transition: all 0.2s;
+    }
+
+    .file-tab.active {
+      background: #0f3460;
+      color: #00d4ff;
+      border-color: #00d4ff;
+    }
+
+    .file-tab:hover:not(.active) {
+      background: #1a1a3e;
+      color: #aaa;
+    }
+
+    .file-tab.exercise-tab {
+      background: #0f3460;
+      color: #00ff88;
+      border-color: #00ff88;
+    }
+
+    .file-tab.exercise-tab.active {
+      background: #00ff88;
+      color: #0f0f1a;
+      border-color: #00ff88;
+    }
+
+    #editor {
+      flex: 1;
+      width: 100%;
+      background: #12121f;
+      color: #00ff88;
+      border: none;
+      padding: 20px;
+      padding-left: 10px;
+      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+      border-left: 1px solid #1a1a2e;
+      overflow-y: auto;
+    }
+
+    #editor::placeholder {
+      color: #333;
+    }
+
+    .editor-wrapper {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    #lineNumbers {
+      width: 44px;
+      background: #0d0d18;
+      color: #444;
+      padding: 20px 6px 20px 0;
+      text-align: right;
+      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      overflow: hidden;
+      user-select: none;
+      border-right: 1px solid #1a1a2e;
+      flex-shrink: 0;
+    }
+
+    #lineNumbers .ln {
+      display: block;
+      padding-right: 4px;
+    }
+
+    #lineNumbers .ln.error-line {
+      color: #ff4757;
+      font-weight: bold;
+      background: rgba(255,71,87,0.1);
+    }
+
+    #errorBar {
+      display: none;
+      padding: 10px 16px;
+      background: rgba(255,71,87,0.1);
+      border-top: 1px solid #ff4757;
+      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    #errorBar.visible {
+      display: block;
+    }
+
+    #errorBar .error-title {
+      color: #ff4757;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    #errorBar .error-location {
+      color: #00d4ff;
+      margin-bottom: 4px;
+    }
+
+    #errorBar .error-code {
+      color: #e0e0e0;
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 4px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    #errorBar .error-hint {
+      color: #888;
+      margin-top: 4px;
+      font-size: 11px;
+    }
+
+    .actions {
+      padding: 10px 20px;
+      background: #1a1a2e;
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid #0f3460;
+    }
+
+    #validateBtn {
+      background: #00ff88;
+      color: #0f0f1a;
+    }
+
+    #validateBtn:hover { background: #00e676; transform: translateY(-1px); }
+
+    .test-results {
+      padding: 12px 16px;
+      background: #12121f;
+      border-top: 1px solid #0f3460;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .test-results.hidden { display: none; }
+
+    .test-results h4 {
+      color: #00d4ff;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .test-case {
+      padding: 4px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .test-case .icon { font-size: 14px; }
+    .test-case.pass .icon { color: #00ff88; }
+    .test-case.fail .icon { color: #ff4757; }
+
+    .test-case .test-name { color: #aaa; }
+    .test-case.pass .test-name { color: #00ff88; }
+    .test-case.fail .test-name { color: #ff4757; }
+
+    .test-case .expected { color: #555; font-size: 11px; }
+    .test-case .actual { color: #ffa502; font-size: 11px; }
+
+    .test-summary {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid #1a1a2e;
+      font-weight: bold;
+    }
+
+    .test-summary.all-pass { color: #00ff88; }
+    .test-summary.has-fail { color: #ff4757; }
+
+    button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+
+    #runBtn {
+      background: #00d4ff;
+      color: #0f0f1a;
+    }
+
+    #runBtn:hover { background: #00b8e6; transform: translateY(-1px); }
+
+    #clearBtn {
+      background: transparent;
+      color: #888;
+      border: 1px solid #333;
+    }
+
+    #clearBtn:hover { border-color: #888; color: #ccc; }
+
+    /* PANEL DERECHO - RESULTADO */
+    .output-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #output {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      background: #12121f;
+    }
+
+    .log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #1a1a2e;
+    }
+
+    .log-entry.log { color: #e0e0e0; }
+    .log-entry.error { color: #ff4757; background: rgba(255,71,87,0.1); }
+    .log-entry.warn { color: #ffa502; }
+    .log-entry.success { color: #00ff88; }
+    .log-entry.result { color: #00d4ff; font-weight: bold; }
+    .log-entry.separator { color: #333; border: none; }
+    .log-entry.debug-info { color: #00d4ff; font-weight: bold; }
+
+    .timestamp {
+      color: #555;
+      font-size: 0.75rem;
+      margin-right: 8px;
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #12121f; }
+    ::-webkit-scrollbar-thumb { background: #0f3460; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #16213e; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>⚡ Logica JS</h1>
+    <span>Escribí tu código a la izquierda, resultado a la derecha</span>
+  </header>
+
+  <div class="container">
+    <!-- EDITOR -->
+    <div class="editor-panel">
+      <div class="panel-header">
+        <h2>📝 Tu Código</h2>
+        <div class="file-tabs">
+          <div class="file-tab active" onclick="loadExample('ejercicios')">ejercicios.js</div>
+          <div class="file-tab" onclick="loadExample('ejemplo1')">ejemplo1.js</div>
+          <div class="file-tab" onclick="loadExample('ejemplo2')">ejemplo2.js</div>
+          <div class="file-tab" onclick="loadExample('ejemplo3')">ejemplo3.js</div>
+          <div class="file-tab exercise-tab" onclick="loadExercise(0)">Ej 1</div>
+          <div class="file-tab exercise-tab" onclick="loadExercise(1)">Ej 2</div>
+          <div class="file-tab exercise-tab" onclick="loadExercise(2)">Ej 3</div>
+          <div class="file-tab exercise-tab" onclick="loadExercise(3)">Ej 4</div>
+          <div class="file-tab exercise-tab" onclick="loadExercise(4)">Ej 5</div>
+        </div>
+      </div>
+      <div class="editor-wrapper">
+        <div id="lineNumbers"></div>
+        <textarea id="editor" spellcheck="false" placeholder="Escribí tu código JS acá..."></textarea>
+      </div>
+      <div id="errorBar">
+        <div class="error-title"></div>
+        <div class="error-location"></div>
+        <div class="error-code"></div>
+        <div class="error-hint"></div>
+      </div>
+      <div id="testResults" class="test-results hidden"></div>
+      <div class="actions">
+        <button id="runBtn" onclick="runCode()">▶ Ejecutar (Ctrl+Enter)</button>
+        <button id="validateBtn" onclick="validateExercise()" style="display:none;">✅ Validar Ejercicio</button>
+        <button id="clearBtn" onclick="clearOutput()">Limpiar</button>
+      </div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="output-panel">
+      <div class="panel-header">
+        <h2>📺 Resultado</h2>
+      </div>
+      <div id="output">
+        <div class="log-entry separator">--- Práctica de lógica JS ---</div>
+        <div class="log-entry log">Escribí tu código y presioná "Ejecutar"</div>
+        <div class="log-entry log">Atajos: Ctrl+Enter para ejecutar</div>
+        <div class="log-entry separator">-----------------------------------</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // EJEMPLOS PRE-CARGADOS
+    // ========================================
+    const examples = {
+      ejercicios: `// ============================================
+// 🎯 TUS EJERCICIOS ACÁ
+// ============================================
+// Escribí tu código y presioná Ctrl+Enter
+
+// Ejercicio 1: Sumar dos números
+function sumar(a, b) {
+  return a + b;
+}
+
+console.log("Suma:", sumar(5, 3));
+
+// Ejercicio 2: Par o impar
+function parImpar(numero) {
+  if (numero % 2 === 0) {
+    return "par";
+  } else {
+    return "impar";
+  }
+}
+
+console.log("4 es", parImpar(4));
+console.log("7 es", parImpar(7));
+
+// Ejercicio 3: Factorial
+function factorial(n) {
+  let resultado = 1;
+  for (let i = 2; i <= n; i++) {
+    resultado *= i;
+  }
+  return resultado;
+}
+
+console.log("Factorial de 5:", factorial(5));
+console.log("Factorial de 10:", factorial(10));
+`,
+
+      ejemplo1: `// ============================================
+// 📚 EJEMPLO 1: Condicionales y ciclos
+// ============================================
+
+// Dado un número, decir si es positivo, negativo o cero
+function clasificarNumero(n) {
+  if (n > 0) {
+    return "positivo";
+  } else if (n < 0) {
+    return "negativo";
+  } else {
+    return "cero";
+  }
+}
+
+console.log("5 →", clasificarNumero(5));
+console.log("-3 →", clasificarNumero(-3));
+console.log("0 →", clasificarNumero(0));
+
+// Encontrar el mayor de 3 números
+function mayorDeTres(a, b, c) {
+  if (a >= b && a >= c) return a;
+  if (b >= a && b >= c) return b;
+  return c;
+}
+
+console.log("Mayor de (3,7,5):", mayorDeTres(3, 7, 5));
+console.log("Mayor de (10,2,8):", mayorDeTres(10, 2, 8));
+
+// Contar vocales en un string
+function contarVocales(texto) {
+  let count = 0;
+  const vocales = "aeiouAEIOU";
+  for (let char of texto) {
+    if (vocales.includes(char)) {
+      count++;
+    }
+  }
+  return count;
+}
+
+console.log("'Hola mundo' tiene", contarVocales("Hola mundo"), "vocales");
+console.log("'JavaScript' tiene", contarVocales("JavaScript"), "vocales");
+`,
+
+      ejemplo2: `// ============================================
+// 📚 EJEMPLO 2: Arrays y métodos
+// ============================================
+
+const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtrar pares
+const pares = numeros.filter(n => n % 2 === 0);
+console.log("Pares:", pares);
+
+// Elevar al cuadrado
+const cuadrados = numeros.map(n => n * n);
+console.log("Cuadrados:", cuadrados);
+
+// Sumar todos
+const suma = numeros.reduce((acc, n) => acc + n, 0);
+console.log("Suma total:", suma);
+
+// Encontrar el primero mayor a 5
+const mayorA5 = numeros.find(n => n > 5);
+console.log("Primero mayor a 5:", mayorA5);
+
+// Verificar si todos son positivos
+const todosPositivos = numeros.every(n => n > 0);
+console.log("¿Todos positivos?", todosPositivos);
+
+// ¿Hay algún negativo?
+const hayNegativo = numeros.some(n => n < 0);
+console.log("¿Hay negativos?", hayNegativo);
+
+// Ordenar al revés
+const ordenInverso = [...numeros].sort((a, b) => b - a);
+console.log("Invertidos:", ordenInverso);
+
+// Ejercicio: ¿cuántos números mayores a 7 hay?
+const mayoresA7 = numeros.filter(n => n > 7);
+console.log("Mayores a 7:", mayoresA7.length);
+`,
+
+      ejemplo3: `// ============================================
+// 📚 EJEMPLO 3: Strings y manipulación
+// ============================================
+
+// Invertir un string
+function invertirString(str) {
+  return str.split("").reverse().join("");
+}
+
+console.log("Invertir 'hola':", invertirString("hola"));
+console.log("Invertir 'javascript':", invertirString("javascript"));
+
+// ¿Es palíndromo?
+function esPalindromo(str) {
+  const limpio = str.toLowerCase().replace(/\\s/g, "");
+  return limpio === invertirString(limpio);
+}
+
+console.log("'ana' es palíndromo?", esPalindromo("ana"));
+console.log("'oso' es palíndromo?", esPalindromo("oso"));
+console.log("'hola' es palíndromo?", esPalindromo("hola"));
+
+// Contar palabras
+function contarPalabras(frase) {
+  return frase.trim().split(/\\s+/).length;
+}
+
+console.log("'Hola mundo' tiene", contarPalabras("Hola mundo"), "palabras");
+console.log("'JS es genial' tiene", contarPalabras("JS es genial"), "palabras");
+
+// Capitalizar primera letra
+function capitalizar(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+console.log("capitalizar 'hola':", capitalizar("hola"));
+console.log("capitalizar 'javascript':", capitalizar("javascript"));
+`
+    };
+
+    // ========================================
+    // EJERCICIOS CON TESTS
+    // ========================================
+    const exercises = [
+      {
+        title: "Contar vocales",
+        description: "Recibe un string. Devuelve cuántas vocales tiene (a, e, i, o, u). Ignorar mayúsculas.",
+        code: `function contarVocales(texto) {
+  // tu código acá
+}
+
+// Ejemplos:
+// contarVocales("hola") → 2
+// contarVocales("AEIOU") → 5
+// contarVocales("xyz") → 0
+// contarVocales("") → 0`,
+        tests: [
+          { name: 'contarVocales("hola")', expected: 2, args: ["hola"] },
+          { name: 'contarVocales("AEIOU")', expected: 5, args: ["AEIOU"] },
+          { name: 'contarVocales("xyz")', expected: 0, args: ["xyz"] },
+          { name: 'contarVocales("")', expected: 0, args: [""] },
+          { name: 'contarVocales("Murciélago")', expected: 5, args: ["Murciélago"] },
+        ]
+      },
+      {
+        title: "Filtrar pares",
+        description: "Recibe un array de números. Devuelve un nuevo array SOLO con los números pares.",
+        code: `function filtrarPares(numeros) {
+  // tu código acá
+}
+
+// Ejemplos:
+// filtrarPares([1,2,3,4,5,6]) → [2,4,6]
+// filtrarPares([7,9,11]) → []
+// filtrarPares([]) → []`,
+        tests: [
+          { name: 'filtrarPares([1,2,3,4,5,6])', expected: [2,4,6], args: [[1,2,3,4,5,6]] },
+          { name: 'filtrarPares([7,9,11])', expected: [], args: [[7,9,11]] },
+          { name: 'filtrarPares([])', expected: [], args: [[]] },
+          { name: 'filtrarPares([2,4,6])', expected: [2,4,6], args: [[2,4,6]] },
+        ]
+      },
+      {
+        title: "Contar palabras",
+        description: "Recibe un string con palabras separadas por espacios. Devuelve cuántas palabras tiene.",
+        code: `function contarPalabras(frase) {
+  // tu código acá
+}
+
+// Ejemplos:
+// contarPalabras("Hola mundo") → 2
+// contarPalabras("  JS   es   genial  ") → 3
+// contarPalabras("") → 0`,
+        tests: [
+          { name: 'contarPalabras("Hola mundo")', expected: 2, args: ["Hola mundo"] },
+          { name: 'contarPalabras("  JS   es   genial  ")', expected: 3, args: ["  JS   es   genial  "] },
+          { name: 'contarPalabras("")', expected: 0, args: [""] },
+          { name: 'contarPalabras("uno")', expected: 1, args: ["uno"] },
+        ]
+      },
+      {
+        title: "Palíndromo",
+        description: "Recibe un string. Devuelve true si es palíndromo. Ignorar espacios y mayúsculas.",
+        code: `function esPalindromo(str) {
+  // tu código acá
+}
+
+// Ejemplos:
+// esPalindromo("ana") → true
+// esPalindromo("A man a plan a canal Panama") → true
+// esPalindromo("hola") → false`,
+        tests: [
+          { name: 'esPalindromo("ana")', expected: true, args: ["ana"] },
+          { name: 'esPalindromo("A man a plan a canal Panama")', expected: true, args: ["A man a plan a canal Panama"] },
+          { name: 'esPalindromo("hola")', expected: false, args: ["hola"] },
+          { name: 'esPalindromo("")', expected: true, args: [""] },
+        ]
+      },
+      {
+        title: "Capitalizar",
+        description: "Recibe un string. Devuelve el mismo string con la primera letra en mayúscula y el resto en minúscula.",
+        code: `function capitalizar(str) {
+  // tu código acá
+}
+
+// Ejemplos:
+// capitalizar("hola") → "Hola"
+// capitalizar("jAVASCRIPT") → "Javascript"
+// capitalizar("") → ""`,
+        tests: [
+          { name: 'capitalizar("hola")', expected: "Hola", args: ["hola"] },
+          { name: 'capitalizar("jAVASCRIPT")', expected: "Javascript", args: ["jAVASCRIPT"] },
+          { name: 'capitalizar("")', expected: "", args: [""] },
+          { name: 'capitalizar("a")', expected: "A", args: ["a"] },
+        ]
+      },
+    ];
+
+    let currentExercise = null;
+
+    function loadExercise(index) {
+      currentExercise = index;
+      const ex = exercises[index];
+      editor.value = ex.code;
+      updateLineNumbers();
+      clearErrorHighlight();
+
+      // Show validate button, hide run button
+      document.getElementById('runBtn').style.display = 'none';
+      document.getElementById('validateBtn').style.display = 'inline-block';
+      document.getElementById('testResults').classList.add('hidden');
+      document.getElementById('testResults').innerHTML = '';
+
+      // Update tabs
+      document.querySelectorAll('.file-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.file-tab')[4 + index].classList.add('active');
+    }
+
+    function loadExample(name) {
+      currentExercise = null;
+      editor.value = examples[name];
+      updateLineNumbers();
+      clearErrorHighlight();
+
+      // Show run button, hide validate button
+      document.getElementById('runBtn').style.display = 'inline-block';
+      document.getElementById('validateBtn').style.display = 'none';
+      document.getElementById('testResults').classList.add('hidden');
+
+      // Update tabs
+      document.querySelectorAll('.file-tab').forEach(tab => tab.classList.remove('active'));
+      if (name === 'ejercicios') document.querySelectorAll('.file-tab')[0].classList.add('active');
+      else if (name === 'ejemplo1') document.querySelectorAll('.file-tab')[1].classList.add('active');
+      else if (name === 'ejemplo2') document.querySelectorAll('.file-tab')[2].classList.add('active');
+      else if (name === 'ejemplo3') document.querySelectorAll('.file-tab')[3].classList.add('active');
+    }
+
+    function validateExercise() {
+      if (currentExercise === null) return;
+
+      const ex = exercises[currentExercise];
+      const code = editor.value;
+      const resultsDiv = document.getElementById('testResults');
+
+      // Clear previous results
+      resultsDiv.innerHTML = '';
+      resultsDiv.classList.remove('hidden');
+
+      // Extract function name from first line
+      const funcMatch = code.match(/function\s+(\w+)\s*\(/);
+      if (!funcMatch) {
+        resultsDiv.innerHTML = '<div class="test-case fail"><span class="icon">❌</span><span class="test-name">No se encontró una función. Escribí tu solución usando el mismo nombre de función.</span></div>';
+        return;
+      }
+
+      const funcName = funcMatch[1];
+
+      // Try to eval the code
+      let userFunc;
+      try {
+        // Create a function that returns the user's function
+        const evalCode = code + `\n; typeof ${funcName} === 'function' ? ${funcName} : null;`;
+        userFunc = eval(evalCode);
+        if (typeof userFunc !== 'function') throw new Error('No se pudo cargar la función');
+      } catch (err) {
+        resultsDiv.innerHTML = '<div class="test-case fail"><span class="icon">❌</span><span class="test-name">Error al cargar tu código: ' + escapeHtml(err.message) + '</span></div>';
+        return;
+      }
+
+      // Run tests
+      let passed = 0;
+      let failed = 0;
+
+      for (const test of ex.tests) {
+        try {
+          const result = userFunc(...test.args);
+          const isEqual = JSON.stringify(result) === JSON.stringify(test.expected);
+
+          if (isEqual) {
+            passed++;
+            resultsDiv.innerHTML += `<div class="test-case pass"><span class="icon">✅</span><span class="test-name">${test.name} → ${JSON.stringify(result)}</span></div>`;
+          } else {
+            failed++;
+            resultsDiv.innerHTML += `<div class="test-case fail"><span class="icon">❌</span><span class="test-name">${test.name}</span></div>`;
+            resultsDiv.innerHTML += `<div class="test-case fail" style="padding-left:30px;"><span class="expected">Esperado: ${JSON.stringify(test.expected)}</span></div>`;
+            resultsDiv.innerHTML += `<div class="test-case fail" style="padding-left:30px;"><span class="actual">Obtenido: ${JSON.stringify(result)}</span></div>`;
+          }
+        } catch (err) {
+          failed++;
+          resultsDiv.innerHTML += `<div class="test-case fail"><span class="icon">❌</span><span class="test-name">${test.name} → Error: ${escapeHtml(err.message)}</span></div>`;
+        }
+      }
+
+      // Summary
+      const total = ex.tests.length;
+      const allPass = failed === 0;
+      resultsDiv.innerHTML += `<div class="test-summary ${allPass ? 'all-pass' : 'has-fail'}">${allPass ? '🎉 ¡Todos los tests pasaron!' : `⚠ ${passed}/${total} tests pasaron — corregí los que fallan`}</div>`;
+
+      // Auto-scroll results
+      resultsDiv.scrollTop = resultsDiv.scrollHeight;
+    }
+
+    const editor = document.getElementById('editor');
+    const output = document.getElementById('output');
+    const lineNumbers = document.getElementById('lineNumbers');
+    const errorBar = document.getElementById('errorBar');
+
+    // ========================================
+    // NÚMEROS DE LÍNEA
+    // ========================================
+    function updateLineNumbers() {
+      const lines = editor.value.split('\n');
+      const count = lines.length;
+      let html = '';
+      for (let i = 1; i <= count; i++) {
+        html += '<span class="ln" data-line="' + i + '">' + i + '</span>';
+      }
+      lineNumbers.innerHTML = html;
+    }
+
+    function highlightErrorLine(lineNum) {
+      lineNumbers.querySelectorAll('.ln').forEach(ln => ln.classList.remove('error-line'));
+      if (lineNum > 0) {
+        const target = lineNumbers.querySelector('[data-line="' + lineNum + '"]');
+        if (target) target.classList.add('error-line');
+      }
+    }
+
+    function clearErrorHighlight() {
+      lineNumbers.querySelectorAll('.ln').forEach(ln => ln.classList.remove('error-line'));
+      errorBar.classList.remove('visible');
+    }
+
+    // Sync scroll entre editor y números de línea
+    editor.addEventListener('scroll', () => {
+      lineNumbers.scrollTop = editor.scrollTop;
+    });
+
+    // Cargar código por defecto
+    editor.value = examples.ejercicios;
+    updateLineNumbers();
+
+    // Actualizar números al escribir
+    editor.addEventListener('input', updateLineNumbers);
+
+    // Ejecutar código
+    function runCode() {
+      const code = editor.value;
+
+      // Limpiar errores anteriores
+      clearErrorHighlight();
+      output.innerHTML = '';
+
+      // Separator
+      addLog('separator', '─'.repeat(40));
+
+      // Capturar console.log
+      const originalLog = console.log;
+      const originalError = console.error;
+      const originalWarn = console.warn;
+
+      console.log = (...args) => {
+        addLog('log', args.map(formatValue).join(' '));
+        originalLog.apply(console, args);
+      };
+
+      console.error = (...args) => {
+        addLog('error', args.map(formatValue).join(' '));
+        originalError.apply(console, args);
+      };
+
+      console.warn = (...args) => {
+        addLog('warn', args.map(formatValue).join(' '));
+        originalWarn.apply(console, args);
+      };
+
+      try {
+        const result = eval(code);
+
+        if (result !== undefined) {
+          addLog('result', '→ ' + formatValue(result));
+        }
+
+        addLog('success', '✅ Ejecución completada');
+      } catch (err) {
+        addLog('error', '❌ Error: ' + err.message);
+
+        // Extraer línea y columna del error
+        let errorLine = null;
+        let errorCol = null;
+        if (err.stack) {
+          const lineMatch = err.stack.match(/<anonymous>:(\\d+):(\\d+)/);
+          if (lineMatch) {
+            errorLine = parseInt(lineMatch[1]);
+            errorCol = parseInt(lineMatch[2]);
+          }
+        }
+
+        if (errorLine !== null) {
+          const lines = code.split('\\n');
+          const errorLineText = lines[errorLine - 1] || '';
+
+          // Resaltar línea en números de línea
+          highlightErrorLine(errorLine);
+
+          // Calcular línea real del error dentro del eval
+          // El código puede tener líneas de offset por el wrapper del eval
+          let realLine = errorLine;
+          const evalWrapperLines = (code.match(/\\n/g) || []).length;
+
+          // Mostrar error bar en el editor
+          errorBar.querySelector('.error-title').textContent = '❌ ' + err.message;
+          errorBar.querySelector('.error-location').textContent = '📍 Línea ' + errorLine + ', columna ' + errorCol;
+          errorBar.querySelector('.error-code').textContent = errorLineText || '(sin código)';
+          errorBar.querySelector('.error-hint').textContent = 'Columna ' + errorCol + ': ' + '·'.repeat(Math.max(0, errorCol - 1)) + '↑';
+          errorBar.classList.add('visible');
+
+          // Scroll el editor a la línea del error
+          const lineHeight = 22.4; // 14px * 1.6 line-height
+          editor.scrollTop = Math.max(0, (errorLine - 3) * lineHeight);
+        }
+      } finally {
+        console.log = originalLog;
+        console.error = originalError;
+        console.warn = originalWarn;
+      }
+
+      output.scrollTop = output.scrollHeight;
+    }
+
+    function formatValue(val) {
+      if (typeof val === 'object' && val !== null) {
+        try {
+          return JSON.stringify(val, null, 2);
+        } catch {
+          return String(val);
+        }
+      }
+      return String(val);
+    }
+
+    function addLog(type, text) {
+      const div = document.createElement('div');
+      div.className = 'log-entry ' + type;
+
+      const time = new Date().toLocaleTimeString('es-AR', { hour12: false });
+      div.innerHTML = '<span class="timestamp">[' + time + ']</span>' + escapeHtml(text);
+
+      output.appendChild(div);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function clearOutput() {
+      output.innerHTML = '';
+      clearErrorHighlight();
+      addLog('separator', '--- Limpiado ---');
+    }
+
+    // Atajo: Ctrl+Enter para ejecutar
+    editor.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runCode();
+      }
+    });
+
+    // Tab en el editor (indentar)
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        editor.value = editor.value.substring(0, start) + '  ' + editor.value.substring(end);
+        editor.selectionStart = editor.selectionEnd = start + 2;
+        updateLineNumbers();
+      }
+    });
+  </script>
+
+</body>
+</html>

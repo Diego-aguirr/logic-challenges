@@ -1,0 +1,120 @@
+🟢 Bloque 1 — Fundamentos (6 ejercicios)
+
+Estos son obligatorios. Si no salen, no seguimos.
+
+1. Contar
+
+Contar cuántas vocales tiene un string.
+
+Patrón: Contar
+
+2. Acumular
+
+Sumar todos los números de un array.
+
+Patrón: Acumular
+
+3. Filtrar
+
+Devolver un nuevo array solo con los números pares.
+
+Patrón: Filtrar
+
+4. Transformar
+
+Devolver un nuevo array con todos los textos en mayúsculas.
+
+Patrón: Transformar
+
+5. Buscar mayor
+
+Devolver el número más grande del array.
+
+Patrón: Mayor
+
+6. Buscar
+
+Devolver true si un texto existe dentro del array.
+
+Patrón: Buscar
+
+🟡 Bloque 2 — Combinaciones (4 ejercicios)
+
+Acá empezás a mezclar patrones.
+
+7.
+
+Contar cuántos números son mayores que 10.
+
+Patrón: Contar + if
+
+8.
+
+Devolver un array con los números multiplicados por 2.
+
+Patrón: Transformar
+
+9.
+
+Devolver un array con palabras de más de 5 letras.
+
+Patrón: Filtrar
+
+10.
+
+Contar cuántas veces aparece "perro".
+
+Patrón: Frecuencia
+
+🔴 Bloque 3 — Nivel examen (2 ejercicios)
+11.
+
+Eliminar duplicados.
+
+Acá combinás:
+
+for
+if
+push
+12.
+
+Contar letras.
+
+Devuelve:
+
+{
+  a: 3,
+  b: 1,
+  c: 2
+}
+
+Es el más difícil del plan.
+
+❌ Lo que sacamos
+
+No vamos a hacer:
+
+Palíndromos.
+Rotar arrays.
+Diferencia simétrica.
+Arrays anidados.
+Recursión.
+Algoritmos difíciles.
+
+Porque no son la mejor inversión de tiempo para mañana.
+
+📌 Cómo vamos a trabajar
+
+Como ya vimos que aprendés mejor así, cada ejercicio va a tener:
+
+Enunciado completo (sin adivinar nada).
+Casos de prueba.
+Qué recibe.
+Qué devuelve.
+Vos programás.
+Si hay un error, te corrijo uno solo.
+No avanzamos hasta que esté perfecto.
+
+No te voy a dar la solución hasta que realmente la saques.
+
+Creo que con este método tenés muchas más posibilidades de llegar sólido al test que intentando abarcar demasiado.

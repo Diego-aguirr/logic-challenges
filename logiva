@@ -1,0 +1,77 @@
+patron tranformar 
+Se usa cuando:
+Recibís un array.
+Devolvés otro array con la misma cantidad de elementos, pero modificados.
+
+ function solution(textos) {
+let resultado=[];
+
+for(let i=0; i< textos.length;i++ ){
+ resultado.push(textos[i].toUpperCase());
+}
+return resultado;
+}
+
+📝 Patrón que acabás de dominar
+
+function solution(numeros) {
+    let maximo = numeros[0];
+
+    for (let i = 0; i < numeros.length; ++i) {
+        if (numeros[i] > maximo) {
+            maximo = numeros[i];
+        }
+    }
+
+    return maximo;
+}
+
+✅ Patrón: Buscar
+function solution(textos, buscado) {
+
+for(let i= 0; i < textos.length; i++){
+if(textos[i]===buscado){
+return true}
+}
+return false
+}
+
+🧪 Ejercicio 11 — Eliminar duplicados
+
+function solution(numeros) {
+  // tu código acá
+let resultado = [];
+
+for(let i=0 ; i< numeros.length ;++i){
+
+if (!resultado.includes(numeros[i]))
+resultado.push(numeros[i]);
+}
+ return resultado;
+
+}
+
+
+-----------///////////----------///////////+
+
+function solution(numeros) {
+  let resultado = [];
+
+  for (let i = 0; i < numeros.length; i++) {
+    let existe = false;
+
+    for (let j = 0; j < resultado.length; j++) {
+      if (resultado[j] === numeros[i]) {
+        existe = true;
+      }
+    }
+
+    if (!existe) {
+      resultado.push(numeros[i]);
+    }
+  }
+
+  return resultado;
+}
+
+
