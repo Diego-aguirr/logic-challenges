@@ -13,6 +13,7 @@ export interface Exercise {
   category: Category;
   difficulty: Difficulty;
   description: string;
+  functionName: string;
   example: { input: string; output: string };
   starterCode: string;
   solution: string;
