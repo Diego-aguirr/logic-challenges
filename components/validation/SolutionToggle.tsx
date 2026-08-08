@@ -24,11 +24,14 @@ export function SolutionToggle({ solution }: SolutionToggleProps) {
           )}
           {visible ? "Ocultar solución" : "Ver solución"}
         </span>
+        <span className="text-xs text-muted-foreground">
+          {visible ? "¡Intentalo vos primero!" : "¿Te trabaste?"}
+        </span>
       </button>
 
       {visible && (
         <div className="border-t border-border">
-          <pre className="overflow-x-auto p-4 font-mono text-sm text-foreground">
+          <pre className="overflow-x-auto p-4 font-mono text-sm leading-relaxed text-foreground">
             <code>{solution}</code>
           </pre>
         </div>

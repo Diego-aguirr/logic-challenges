@@ -5,11 +5,10 @@ import { useState } from "react";
 import { Menu, X, Code2 } from "lucide-react";
 
 const categories = [
-  { label: "Fundamentos", href: "/ejercicios?cat=fundamentos" },
-  { label: "Cadenas", href: "/ejercicios?cat=cadenas" },
-  { label: "Arreglos", href: "/ejercicios?cat=arreglos" },
-  { label: "Objetos", href: "/ejercicios?cat=objetos" },
-  { label: "Lógica", href: "/ejercicios?cat=logica" },
+  { label: "Módulo 1", href: "/ejercicios?module=1", emoji: "🟢" },
+  { label: "Módulo 2", href: "/ejercicios?module=2", emoji: "🔵" },
+  { label: "Módulo 3", href: "/ejercicios?module=3", emoji: "🟣" },
+  { label: "Módulo 4", href: "/ejercicios?module=4", emoji: "🟠" },
 ];
 
 export function Header() {
@@ -25,13 +24,14 @@ export function Header() {
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden items-center gap-6 md:flex">
+        <ul className="hidden items-center gap-1 md:flex">
           {categories.map((cat) => (
             <li key={cat.href}>
               <Link
                 href={cat.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
               >
+                <span>{cat.emoji}</span>
                 {cat.label}
               </Link>
             </li>
@@ -51,14 +51,15 @@ export function Header() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="border-t border-border bg-background px-4 pb-4 md:hidden">
-          <ul className="flex flex-col gap-2 pt-2">
+          <ul className="flex flex-col gap-1 pt-2">
             {categories.map((cat) => (
               <li key={cat.href}>
                 <Link
                   href={cat.href}
-                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                  className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                   onClick={() => setMenuOpen(false)}
                 >
+                  <span>{cat.emoji}</span>
                   {cat.label}
                 </Link>
               </li>

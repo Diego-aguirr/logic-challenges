@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Exercise } from "@/lib/exercises/types";
-import { DifficultyBadge, CategoryBadge } from "./Badge";
+import { DifficultyBadge, ModuleBadge, PatternBadge } from "./Badge";
 import { CheckCircle, Code2 } from "lucide-react";
 
 export function ExerciseCard({
@@ -27,13 +27,21 @@ export function ExerciseCard({
       </div>
 
       <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">
-        {exercise.description.slice(0, 80)}...
+        {exercise.context.slice(0, 100)}...
       </p>
 
       <div className="flex flex-wrap gap-2">
-        <CategoryBadge category={exercise.category} />
+        <ModuleBadge module={exercise.module} />
+        <PatternBadge pattern={exercise.pattern} />
         <DifficultyBadge difficulty={exercise.difficulty} />
       </div>
+
+      {completed && (
+        <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400">
+          <CheckCircle className="h-3.5 w-3.5" />
+          Completado
+        </div>
+      )}
     </Link>
   );
 }
