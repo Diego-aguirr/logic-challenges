@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { exercises, Category, Difficulty } from "@/lib/exercises/data";
+import { exercises, Module, Difficulty } from "@/lib/exercises/data";
 import { ExerciseCard } from "./ExerciseCard";
+import { useProgress } from "@/lib/hooks/useProgress";
 
-const categories: { value: Category | "todas"; label: string }[] = [
-  { value: "todas", label: "Todas" },
-  { value: "fundamentos", label: "Fundamentos" },
-  { value: "cadenas", label: "Cadenas" },
-  { value: "arreglos", label: "Arreglos" },
-  { value: "objetos", label: "Objetos" },
-  { value: "logica", label: "Lógica" },
+const modules: { value: Module | 0; label: string; emoji: string }[] = [
+  { value: 0, label: "Todos", emoji: "📚" },
+  { value: 1, label: "Arrays y Bucles", emoji: "🟢" },
+  { value: 2, label: "Métodos de JS", emoji: "🔵" },
+  { value: 3, label: "Objetos", emoji: "🟣" },
+  { value: 4, label: "Funciones", emoji: "🟠" },
 ];
 
 const difficulties: { value: Difficulty | "todas"; label: string }[] = [
@@ -21,32 +21,85 @@ const difficulties: { value: Difficulty | "todas"; label: string }[] = [
 ];
 
 export function ExerciseList() {
-  const [category, setCategory] = useState<Category | "todas">("todas");
+  const [module, setModule] = useState<Module | 0>(0);
   const [difficulty, setDifficulty] = useState<Difficulty | "todas">("todas");
+  const { isCompleted, loaded } = useProgress();
 
   const filtered = exercises.filter((ex) => {
-    if (category !== "todas" && ex.category !== category) return false;
+    if (module !== 0 && ex.module !== module) return false;
     if (difficulty !== "todas" && ex.difficulty !== difficulty) return false;
     return true;
   });
 
+  // Group by module when showing all
+  const grouped =
+    module === 0
+      ? ([1, 2, 3, 4].map((m) => ({
+          module: m as Module,
+          exercises: filtered.filter((ex) => ex.module === m),
+        })).filter((g) => g.exercises.length > 0))
+      : null;
+
+  // Count completed per module
+  const moduleStats = [1, 2, 3, 4].map((m) => {
+    const moduleExercises = exercises.filter((ex) => ex.module === m);
+    const completedCount = loaded
+      ? moduleExercises.filter((ex) => isCompleted(ex.id)).length
+      : 0;
+    return {
+      module: m,
+      total: moduleExercises.length,
+      completed: completedCount,
+    };
+  });
+
   return (
     <div>
+      {/* Progress summary */}
+      {loaded && (
+        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {moduleStats.map((stat) => (
+            <div
+              key={stat.module}
+              className="rounded-lg border border-border bg-card p-4"
+            >
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-sm font-medium text-foreground">
+                  Módulo {stat.module}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {stat.completed}/{stat.total}
+                </span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-500"
+                  style={{
+                    width: `${stat.total > 0 ? (stat.completed / stat.total) * 100 : 0}%`,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Filters */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-        {/* Category tabs */}
+        {/* Module tabs */}
         <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => (
+          {modules.map((m) => (
             <button
-              key={cat.value}
-              onClick={() => setCategory(cat.value)}
+              key={m.value}
+              onClick={() => setModule(m.value)}
               className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
-                category === cat.value
+                module === m.value
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:text-foreground"
               }`}
             >
-              {cat.label}
+              <span className="mr-1">{m.emoji}</span>
+              {m.label}
             </button>
           ))}
         </div>
@@ -66,15 +119,47 @@ export function ExerciseList() {
       </div>
 
       {/* Results count */}
-      <p className="mb-4 text-sm text-muted-foreground">
+      <p className="mb-6 text-sm text-muted-foreground">
         {filtered.length} ejercicio{filtered.length !== 1 ? "s" : ""}
+        {loaded && (
+          <span className="ml-2 text-emerald-400">
+            ({filtered.filter((ex) => isCompleted(ex.id)).length} completados)
+          </span>
+        )}
       </p>
 
-      {/* Grid */}
-      {filtered.length > 0 ? (
+      {/* Grouped view (all modules) */}
+      {grouped ? (
+        <div className="space-y-10">
+          {grouped.map((group) => (
+            <section key={group.module}>
+              <h2 className="mb-4 text-lg font-semibold text-foreground">
+                {group.module === 1 && "🟢 Módulo 1 — Arrays y Bucles"}
+                {group.module === 2 && "🔵 Módulo 2 — Métodos de JavaScript"}
+                {group.module === 3 && "🟣 Módulo 3 — Objetos"}
+                {group.module === 4 && "🟠 Módulo 4 — Funciones"}
+              </h2>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {group.exercises.map((ex) => (
+                  <ExerciseCard
+                    key={ex.id}
+                    exercise={ex}
+                    completed={loaded && isCompleted(ex.id)}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      ) : filtered.length > 0 ? (
+        /* Flat view (single module selected) */
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((ex) => (
-            <ExerciseCard key={ex.id} exercise={ex} />
+            <ExerciseCard
+              key={ex.id}
+              exercise={ex}
+              completed={loaded && isCompleted(ex.id)}
+            />
           ))}
         </div>
       ) : (
