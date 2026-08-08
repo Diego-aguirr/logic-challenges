@@ -1,52 +1,81 @@
-# ⚡ Práctica de Lógica con JS
+# ⚡ Lógica
 
-Entorno para practicar ejercicios de lógica con JavaScript y ver resultados en tiempo real.
+Plataforma interactiva para practicar lógica de programación en español. Ejercicios progresivos con editor en línea, validación en tiempo real y pistas guiadas.
 
-## Cómo usar
+## Demo
 
-1. Abrí `index.html` en tu navegador (doble clic o `xdg-open index.html`)
-2. Escribí tu código JS en el panel izquierdo
-3. Presioná **Ctrl+Enter** o el botón **▶ Ejecutar**
-4. Mirá el resultado en el panel derecho
+```bash
+npm install
+npm run dev
+```
 
-## Atajos
+Abrí [http://localhost:3000](http://localhost:3000)
 
-- **Ctrl+Enter** → Ejecutar código
-- **Tab** → Indentar (2 espacios)
+## Cómo funciona
 
-## Ejemplos incluidos
+1. Elegí un ejercicio del catálogo
+2. Leé el contexto y el objetivo
+3. Escribí tu solución en el editor
+4. Presioná **Ctrl+Enter** o el botón **Ejecutar**
+5. Verificá si pasaste todos los tests
 
-En la barra de tabs arriba del editor tenés 4 archivos:
+## Estructura
 
-| Tab         | Qué contiene                        |
-| ----------- | ----------------------------------- |
-| `ejercicios.js` | Tus ejercicios (editable)           |
-| `ejemplo1.js`   | Condicionales, ciclos, funciones    |
-| `ejemplo2.js`   | Arrays y métodos (filter, map, reduce) |
-| `ejemplo3.js`   | Strings y manipulación              |
+```
+app/
+├── layout.tsx              # Root layout (Inter + JetBrains Mono)
+├── page.tsx                # Landing page
+├── globals.css             # Tailwind v4 + shadcn/ui theme
+├── ejercicios/
+│   ├── page.tsx            # Browser de ejercicios
+│   └── [id]/page.tsx       # Vista de ejercicio individual
+components/
+├── layout/                 # Header, Footer
+├── exercises/              # ExerciseCard, ExerciseList, Badge
+├── editor/                 # CodeEditor, RunButton, OutputPanel
+└── validation/             # HintsSystem, SolutionToggle
+lib/
+├── exercises/              # types.ts, data.ts (31 ejercicios)
+├── hooks/                  # useProgress (localStorage)
+└── validation/             # runner.ts (ejecución de tests)
+```
 
-## Ejercicios para practicar
+## Módulos
 
-### Nivel 1 — Básico
-1. Crear función que convierta Celsius a Fórmula: `F = C * 9/5 + 32`
-2. Dado un número, decir si es positivo, negativo o cero
-3. Encontrar el mayor de 3 números
-4. Calcular el área de un rectángulo
+| Módulo | Nombre | Ejercicios | Patrones |
+|--------|--------|------------|----------|
+| 🟢 1 | Arrays y Bucles | 9 | recorrer, contar, maximo, buscar, transformar, filtrar, combinar, acumular, minimo |
+| 🔵 2 | Métodos de JS | 8 | map, filter, find, some, every, reduce, sort, includes |
+| 🟣 3 | Objetos | 7 | propiedades, modificar, agregar, desestructuracion, spread, objetos-array, objetos-anidados |
+| 🟠 4 | Funciones | 7 | parametros, return, scope, arrow, callbacks, funciones-valor, funciones-reciben |
 
-### Nivel 2 — Strings
-5. Invertir un string sin usar `.reverse()`
-6. Contar cuántas vocales tiene un string
-7. Verificar si un string es palíndromo
-8. Capitalizar la primera letra de cada palabra
+## Pedagogía
 
-### Nivel 3 — Arrays
-9. Duplicar todos los elementos de un array
-10. Filtrar solo los números pares
-11. Encontrar el elemento más grande
-12. Aplanar un array de arrays (ej: `[[1,2],[3,4]]` → `[1,2,3,4]`)
+Cada ejercicio tiene **restricciones** que te obligan a pensar la lógica antes de usar atajos:
 
-### Nivel 4 — Lógica
-13. Verificar si un número es primo
-14. Generar la tabla de multiplicar del 1 al 10
-15. Implementar búsqueda binaria en un array ordenado
-16. Contar cuántas veces aparece cada carácter en un string
+- **Módulo 1**: Solo `for`, `if`, variables. Sin métodos de array.
+- **Módulo 2**: Reemplazá los bucles con `map`, `filter`, `reduce`.
+- **Módulo 3**: Trabajá con objetos, desestructuración, spread.
+- **Módulo 4**: Funciones de orden superior, closures, callbacks.
+
+## Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Editor**: Code textarea con syntax feedback
+- **Validation**: Custom test runner (new Function)
+- **State**: localStorage para progreso
+
+## Comandos
+
+```bash
+npm run dev      # Desarrollo
+npm run build    # Build producción
+npm run start    # Servidor producción
+npm run lint     # Linting
+```
+
+## Licencia
+
+MIT
