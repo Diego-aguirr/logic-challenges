@@ -184,7 +184,7 @@ export default function Home() {
             ].map((m) => (
               <Link
                 key={m.module}
-                href="/ejercicios"
+                href={`/ejercicios?module=${m.module}`}
                 className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
                 <div className="mb-3 text-2xl">{m.emoji}</div>

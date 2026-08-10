@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { exercises, Module, Difficulty } from "@/lib/exercises";
 import { ExerciseCard } from "./ExerciseCard";
 import { useProgress } from "@/lib/hooks/useProgress";
@@ -22,7 +23,11 @@ const difficulties: { value: Difficulty | "todas"; label: string }[] = [
 ];
 
 export function ExerciseList() {
-  const [module, setModule] = useState<Module | 0>(0);
+  const searchParams = useSearchParams();
+  const initialModule = searchParams.get("module");
+  const [module, setModule] = useState<Module | 0>(
+    initialModule ? (parseInt(initialModule) as Module) : 0
+  );
   const [difficulty, setDifficulty] = useState<Difficulty | "todas">("todas");
   const { isCompleted, loaded } = useProgress();
 
