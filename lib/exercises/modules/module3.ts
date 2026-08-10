@@ -282,11 +282,11 @@ export const module3: Exercise[] = [
     solution: `function carritoCaro(carrito) {\n  const resultado = [];\n  for (let i = 0; i < carrito.length; i++) {\n    if (carrito[i].price > 500) {\n      resultado.push(carrito[i]);\n    }\n  }\n  return resultado;\n}`,
     testCases: [
       {
-        args: [
+        args: [[
           { name: "Mouse", price: 150, quantity: 1 },
           { name: "Monitor", price: 3000, quantity: 1 },
           { name: "Teclado", price: 800, quantity: 2 },
-        ],
+        ]],
         expected: [
           { name: "Monitor", price: 3000, quantity: 1 },
           { name: "Teclado", price: 800, quantity: 2 },
@@ -294,17 +294,17 @@ export const module3: Exercise[] = [
         description: "Dos ítems caros",
       },
       {
-        args: [{ name: "Cable", price: 50, quantity: 3 }],
+        args: [[{ name: "Cable", price: 50, quantity: 3 }]],
         expected: [],
         description: "Ninguno caro",
       },
       {
-        args: [],
+        args: [[]],
         expected: [],
         description: "Carrito vacío",
       },
       {
-        args: [{ name: "Laptop", price: 5000, quantity: 1 }],
+        args: [[{ name: "Laptop", price: 5000, quantity: 1 }]],
         expected: [{ name: "Laptop", price: 5000, quantity: 1 }],
         description: "Un solo ítem caro",
       },

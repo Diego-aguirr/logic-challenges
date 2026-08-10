@@ -77,13 +77,34 @@ export function runInSandbox(
         (tc, i) => `
       try {
         const result = ${functionName}(${JSON.stringify(tc.args).slice(1, -1)});
-        const pass = JSON.stringify(result) === JSON.stringify(${JSON.stringify(tc.expected)});
-        testResults.push({
-          testName: ${JSON.stringify(tc.description)},
-          pass,
-          expected: ${JSON.stringify(tc.expected)},
-          actual: result
-        });
+        // Handle async functions
+        if (result && typeof result.then === 'function') {
+          const p = result.then(res => {
+            const pass = JSON.stringify(res) === JSON.stringify(${JSON.stringify(tc.expected)});
+            testResults.push({
+              testName: ${JSON.stringify(tc.description)},
+              pass,
+              expected: ${JSON.stringify(tc.expected)},
+              actual: res
+            });
+          }).catch(e => {
+            testResults.push({
+              testName: ${JSON.stringify(tc.description)},
+              pass: false,
+              expected: ${JSON.stringify(tc.expected)},
+              error: e.message
+            });
+          });
+          promises.push(p);
+        } else {
+          const pass = JSON.stringify(result) === JSON.stringify(${JSON.stringify(tc.expected)});
+          testResults.push({
+            testName: ${JSON.stringify(tc.description)},
+            pass,
+            expected: ${JSON.stringify(tc.expected)},
+            actual: result
+          });
+        }
       } catch (e) {
         testResults.push({
           testName: ${JSON.stringify(tc.description)},
@@ -102,6 +123,12 @@ export function runInSandbox(
 <body>
 <script>
   const testResults = [];
+  const promises = [];
+  
+  function postResults() {
+    postMessage({ type: 'sandbox-result', results: testResults });
+  }
+  
   try {
     ${userCode}
 
@@ -113,7 +140,12 @@ export function runInSandbox(
       });
     } else {
       ${testCasesCode}
-      postMessage({ type: 'sandbox-result', results: testResults });
+      // Wait for all promises to resolve before posting results
+      if (promises.length > 0) {
+        Promise.all(promises).then(() => postResults()).catch(() => postResults());
+      } else {
+        postResults();
+      }
     }
   } catch (e) {
     postMessage({

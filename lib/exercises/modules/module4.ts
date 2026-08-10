@@ -133,21 +133,38 @@ export const module4: Exercise[] = [
     testCases: [
       {
         args: [],
+        methodCalls: [],
         expected: 0,
         description: "Contador inicia en 0",
       },
       {
-        args: ["increment"],
+        args: [],
+        methodCalls: [
+          { method: "increment", args: [] },
+          { method: "getCount", args: [] },
+        ],
         expected: 1,
         description: "Un incremento",
       },
       {
-        args: ["increment", "increment", "increment"],
+        args: [],
+        methodCalls: [
+          { method: "increment", args: [] },
+          { method: "increment", args: [] },
+          { method: "increment", args: [] },
+          { method: "getCount", args: [] },
+        ],
         expected: 3,
         description: "Tres incrementos",
       },
       {
-        args: ["increment", "getCount", "increment", "getCount"],
+        args: [],
+        methodCalls: [
+          { method: "increment", args: [] },
+          { method: "getCount", args: [] },
+          { method: "increment", args: [] },
+          { method: "getCount", args: [] },
+        ],
         expected: 2,
         description: "Interleaving increment y getCount",
       },
@@ -286,22 +303,26 @@ export const module4: Exercise[] = [
     solution: `function obtenerOperacion(tipo) {\n  if (tipo === "sumar") {\n    return (a, b) => a + b;\n  } else if (tipo === "restar") {\n    return (a, b) => a - b;\n  }\n}`,
     testCases: [
       {
-        args: ["sumar", 10, 5],
+        args: ["sumar"],
+        fnArgs: [10, 5],
         expected: 15,
         description: "Suma 10 + 5",
       },
       {
-        args: ["restar", 10, 5],
+        args: ["restar"],
+        fnArgs: [10, 5],
         expected: 5,
         description: "Resta 10 - 5",
       },
       {
-        args: ["sumar", 0, 0],
+        args: ["sumar"],
+        fnArgs: [0, 0],
         expected: 0,
         description: "Suma con ceros",
       },
       {
-        args: ["restar", 100, 200],
+        args: ["restar"],
+        fnArgs: [100, 200],
         expected: -100,
         description: "Resta con resultado negativo",
       },

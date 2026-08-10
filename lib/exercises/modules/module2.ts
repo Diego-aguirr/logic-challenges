@@ -86,11 +86,11 @@ export const module2: Exercise[] = [
     solution: `function disponibles(productos) {\n  return productos.filter(producto => producto.stock > 0);\n}`,
     testCases: [
       {
-        args: [
+        args: [[
           { name: "Mouse", stock: 5 },
           { name: "Teclado", stock: 0 },
           { name: "Monitor", stock: 3 },
-        ],
+        ]],
         expected: [
           { name: "Mouse", stock: 5 },
           { name: "Monitor", stock: 3 },
@@ -98,17 +98,17 @@ export const module2: Exercise[] = [
         description: "Dos disponibles, uno agotado",
       },
       {
-        args: [{ name: "Cable", stock: 0 }],
+        args: [[{ name: "Cable", stock: 0 }]],
         expected: [],
         description: "Ninguno disponible",
       },
       {
-        args: [],
+        args: [[]],
         expected: [],
         description: "Array vacío",
       },
       {
-        args: [{ name: "USB", stock: 10 }],
+        args: [[{ name: "USB", stock: 10 }]],
         expected: [{ name: "USB", stock: 10 }],
         description: "Todos disponibles",
       },
@@ -205,29 +205,29 @@ export const module2: Exercise[] = [
     solution: `function hayAgotados(productos) {\n  return productos.some(producto => producto.stock === 0);\n}`,
     testCases: [
       {
-        args: [
+        args: [[
           { name: "Mouse", stock: 5 },
           { name: "Teclado", stock: 0 },
           { name: "Monitor", stock: 3 },
-        ],
+        ]],
         expected: true,
         description: "Hay uno agotado",
       },
       {
-        args: [
+        args: [[
           { name: "Mouse", stock: 5 },
           { name: "Teclado", stock: 10 },
-        ],
+        ]],
         expected: false,
         description: "Ninguno agotado",
       },
       {
-        args: [],
+        args: [[]],
         expected: false,
         description: "Array vacío",
       },
       {
-        args: [{ name: "Cable", stock: 0 }],
+        args: [[{ name: "Cable", stock: 0 }]],
         expected: true,
         description: "Un solo producto agotado",
       },
@@ -264,29 +264,29 @@ export const module2: Exercise[] = [
     solution: `function todosDisponibles(productos) {\n  return productos.every(producto => producto.stock > 0);\n}`,
     testCases: [
       {
-        args: [
+        args: [[
           { name: "Mouse", stock: 5 },
           { name: "Teclado", stock: 10 },
           { name: "Monitor", stock: 3 },
-        ],
+        ]],
         expected: true,
         description: "Todos disponibles",
       },
       {
-        args: [
+        args: [[
           { name: "Mouse", stock: 5 },
           { name: "Teclado", stock: 0 },
-        ],
+        ]],
         expected: false,
         description: "Uno agotado",
       },
       {
-        args: [],
+        args: [[]],
         expected: true,
         description: "Array vacío (every retorna true)",
       },
       {
-        args: [{ name: "USB", stock: 1 }],
+        args: [[{ name: "USB", stock: 1 }]],
         expected: true,
         description: "Un solo producto disponible",
       },
@@ -375,11 +375,11 @@ export const module2: Exercise[] = [
     solution: `function ordenarPorPrecio(productos) {\n  return [...productos].sort((a, b) => a.price - b.price);\n}`,
     testCases: [
       {
-        args: [
+        args: [[
           { name: "Mouse", price: 150 },
           { name: "Monitor", price: 3000 },
           { name: "Teclado", price: 800 },
-        ],
+        ]],
         expected: [
           { name: "Mouse", price: 150 },
           { name: "Teclado", price: 800 },
@@ -388,20 +388,20 @@ export const module2: Exercise[] = [
         description: "Orden ascendente por precio",
       },
       {
-        args: [{ name: "Mouse", price: 150 }],
+        args: [[{ name: "Mouse", price: 150 }]],
         expected: [{ name: "Mouse", price: 150 }],
         description: "Un solo producto",
       },
       {
-        args: [],
+        args: [[]],
         expected: [],
         description: "Array vacío",
       },
       {
-        args: [
+        args: [[
           { name: "A", price: 500 },
           { name: "B", price: 500 },
-        ],
+        ]],
         expected: [
           { name: "A", price: 500 },
           { name: "B", price: 500 },
