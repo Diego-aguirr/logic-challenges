@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { exercises, Module, Difficulty } from "@/lib/exercises/data";
+import { exercises, Module, Difficulty } from "@/lib/exercises";
 import { ExerciseCard } from "./ExerciseCard";
 import { useProgress } from "@/lib/hooks/useProgress";
 

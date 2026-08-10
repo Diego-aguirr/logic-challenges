@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { exercises, getExerciseById } from "@/lib/exercises/data";
+import { exercises, getExerciseById } from "@/lib/exercises";
 import { Exercise } from "@/lib/exercises/types";
 import { runTests } from "@/lib/validation/runner";
 import { CodeEditor } from "@/components/editor/CodeEditor";
