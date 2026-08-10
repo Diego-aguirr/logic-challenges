@@ -11,6 +11,7 @@ const modules: { value: Module | 0; label: string; emoji: string }[] = [
   { value: 2, label: "Métodos de JS", emoji: "🔵" },
   { value: 3, label: "Objetos", emoji: "🟣" },
   { value: 4, label: "Funciones", emoji: "🟠" },
+  { value: 5, label: "JS Moderno", emoji: "🔴" },
 ];
 
 const difficulties: { value: Difficulty | "todas"; label: string }[] = [
@@ -34,14 +35,14 @@ export function ExerciseList() {
   // Group by module when showing all
   const grouped =
     module === 0
-      ? ([1, 2, 3, 4].map((m) => ({
+      ? ([1, 2, 3, 4, 5].map((m) => ({
           module: m as Module,
           exercises: filtered.filter((ex) => ex.module === m),
         })).filter((g) => g.exercises.length > 0))
       : null;
 
   // Count completed per module
-  const moduleStats = [1, 2, 3, 4].map((m) => {
+  const moduleStats = [1, 2, 3, 4, 5].map((m) => {
     const moduleExercises = exercises.filter((ex) => ex.module === m);
     const completedCount = loaded
       ? moduleExercises.filter((ex) => isCompleted(ex.id)).length
@@ -57,7 +58,7 @@ export function ExerciseList() {
     <div>
       {/* Progress summary */}
       {loaded && (
-        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mb-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {moduleStats.map((stat) => (
             <div
               key={stat.module}
@@ -138,6 +139,7 @@ export function ExerciseList() {
                 {group.module === 2 && "🔵 Módulo 2 — Métodos de JavaScript"}
                 {group.module === 3 && "🟣 Módulo 3 — Objetos"}
                 {group.module === 4 && "🟠 Módulo 4 — Funciones"}
+                {group.module === 5 && "🔴 Módulo 5 — JavaScript Moderno"}
               </h2>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {group.exercises.map((ex) => (

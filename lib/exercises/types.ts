@@ -1,4 +1,4 @@
-export type Module = 1 | 2 | 3 | 4;
+export type Module = 1 | 2 | 3 | 4 | 5;
 
 export type Pattern =
   // Módulo 1 — Arrays y Bucles
@@ -35,7 +35,23 @@ export type Pattern =
   | "arrow"
   | "callbacks"
   | "funciones-valor"
-  | "funciones-reciben";
+  | "funciones-reciben"
+  // Módulo 5 — JS Moderno
+  | "rest-params"
+  | "spread-array"
+  | "spread-object"
+  | "optional-chaining"
+  | "nullish-coalescing"
+  | "optional-nullish-combo"
+  | "filter-map-chain"
+  | "reduce-group"
+  | "flat-flatmap"
+  | "spread-destructuring"
+  | "try-catch"
+  | "json-parse"
+  | "async-await"
+  | "async-retry"
+  | "validacion-formulario";
 
 export type Category = Module; // alias for backward compat
 

@@ -1,0 +1,385 @@
+Módulo 1 - Arrays y Bucles
+Ejercicio 1 - Mostrar productos de una tienda
+Contexto
+
+Estás desarrollando un e-commerce.
+function showProducts(products) {
+
+}
+
+El backend te devuelve la siguiente lista de productos:
+
+
+function showProducts(products) {
+  for (let i = 0; i < products.length; i++) {
+    console.log(products[i]);
+  }
+}
+-------------
+modelo 
+Módulo 1 - Arrays y Bucles
+Ejercicio 2 - Contar productos disponibles
+Contexto
+
+Estás desarrollando un e-commerce.
+
+El backend devuelve el siguiente stock:
+
+const stock = [10, 0, 5, 0, 8];
+
+Cada número representa la cantidad de unidades disponibles de un producto.
+
+10 → Hay stock.
+0 → No hay stock.
+
+La empresa quiere saber cuántos productos tienen stock disponible.
+
+Objetivo
+
+Crear una función llamada countProductsInStock que devuelva la cantidad de productos cuyo stock sea mayor que 0.
+
+Firma de la función
+function countProductsInStock(stock) {
+
+}
+Ejemplo
+const stock = [10, 0, 5, 0, 8];
+
+console.log(countProductsInStock(stock));
+Salida esperada
+3
+
+Porque:
+
+10 ✅
+0 ❌
+5 ✅
+0 ❌
+8 ✅
+
+Total: 3
+
+Restricciones
+
+Podés usar:
+
+✅ for
+✅ if
+✅ Variables (let, const)
+✅ Operadores (>, <, ===)
+
+Todavía no podés usar:
+
+❌ filter()
+❌ reduce()
+❌ map()
+❌ forEach()
+Pistas
+
+Antes de escribir código, respondete estas preguntas:
+
+¿Necesitás recorrer el array? ✔️
+¿Necesitás una variable para ir contando? ✔️
+¿Cuándo debería aumentar el contador? ✔️
+¿Qué debería devolver la función al final?
+🎯 Objetivo de aprendizaje
+
+Hoy vas a aprender el Patrón N.º 2: Contar.
+
+Este patrón aparece constantemente en aplicaciones reales:
+
+¿Cuántos usuarios están activos?
+¿Cuántos productos tienen stock?
+¿Cuántos pedidos están pendientes?
+¿Cuántos mensajes no fueron leídos?
+
+No mires la solución. Escribila vos y la corregimos juntos. Si funciona, después te mostraré cómo ese mismo patrón se transforma en un filter() o un reduce(), pero primero quiero que domines la lógica.
+const stock = [10, 0, 5, 0, 8];
+function countProductsInStock(stock) {
+  let count = 0;
+  for (let i = 0; i < stock.length; i++) {
+    if (stock[i] > 0) {
+      count++;
+    }
+  }
+  return count;
+}
+----
+3
+✅ for
+✅ if
+✅ variables
+
+No podés usar:
+
+❌ Math.max
+❌ sort
+❌ reduce
+Pistas
+
+Preguntas para pensar:
+
+¿Necesitás recorrer el array? ✔️
+¿Necesitás guardar el mayor valor encontrado hasta el momento? ✔️
+Cuando encontrás uno más grande, ¿qué deberías hacer? ✔️
+
+const prices = [1500, 3000, 2500, 5000, 1200];
+function getMostExpensivePrice(prices) {
+  let maxPrices = prices[0];
+  for (let i = 0; i < prices.length; i++) {
+    if (prices[i] > maxPrices) {
+      maxPrices = prices[i];
+    }
+  }
+   return maxPrices;
+}
+console.log(getMostExpensivePrice(maxPrices));
+
+Módulo 1 - Arrays y Bucles
+Ejercicio 4 - Buscar un producto
+Contexto
+
+Estás desarrollando el buscador de una tienda online.
+
+El usuario escribe el nombre de un producto y el sistema debe decir si ese producto existe.
+
+Los productos son:
+
+const products = [
+  "Mouse",
+  "Teclado",
+  "Monitor",
+  "Auriculares"
+];
+Objetivo
+
+Crear una función llamada:
+
+function productExists(products, productName) {
+
+}
+
+Debe devolver:
+
+true si el producto existe.
+false si no existe.
+Ejemplos
+console.log(productExists(products, "Monitor"));
+
+Resultado esperado:
+
+true
+console.log(productExists(products, "Notebook"));
+
+Resultado esperado:
+
+false
+Restricciones
+
+Podés usar:
+
+✅ for
+✅ if
+✅ return
+
+Todavía NO podés usar:
+
+❌ includes()
+❌ find()
+❌ some()
+Pistas
+
+Preguntas para pensar:
+
+¿Necesitás recorrer el array? ✔️
+¿Qué pasa si encontrás el producto? ✔️
+¿Hace falta seguir recorriendo el array después de encontrarlo? 🤔
+Si terminaste de recorrer todo y nunca lo encontraste, ¿qué deberías devolver?
+💼 Mundo real
+
+Este patrón se usa constantemente:
+
+Buscar un usuario por email.
+Buscar un producto por nombre.
+Buscar un pedido por ID.
+Buscar un cliente por DNI.
+
+-
+Módulo 1 - Arrays y Bucles
+Ejercicio 5 - Aplicar un descuento a todos los productos
+Contexto
+
+Estás desarrollando un e-commerce.
+
+Hoy hay una promoción del 10% de descuento para todos los productos.
+
+Los precios originales son:
+
+const prices = [100, 250, 80, 500];
+
+No querés modificar el array original.
+
+Necesitás crear otro array con los precios ya descontados.
+
+Objetivo
+
+Crear una función llamada:
+
+function applyDiscount(prices) {
+
+}
+
+Debe devolver:
+
+[90, 225, 72, 450]
+Ejemplo
+const prices = [100, 250, 80, 500];
+
+console.log(applyDiscount(prices));
+
+Resultado esperado:
+
+[90, 225, 72, 450]
+Restricciones
+
+Podés usar:
+
+✅ for
+✅ push
+✅ Variables
+✅ Operaciones matemáticas
+
+Todavía NO podés usar:
+
+❌ map()
+❌ forEach()
+Ejercicio 8 — Sumar el total de un carrito
+Contexto
+
+Estás trabajando en el carrito de un e-commerce.
+
+const cart = [
+  { name: "Mouse", price: 100, quantity: 2 },
+  { name: "Teclado", price: 200, quantity: 1 },
+  { name: "Monitor", price: 300, quantity: 2 }
+];
+
+Cada producto tiene:
+
+price → precio de una unidad.
+quantity → cantidad comprada.
+
+🗺️ Progreso — JavaScript para el mundo real
+🟢 Módulo 1 — Lógica con Arrays y for
+#	Patrón	Qué aprendés	Estado
+1	Recorrer	Recorrer todos los elementos	✅
+2	Contar	Contar elementos que cumplen una condición	✅
+3	Máximo	Encontrar el valor más grande	✅
+4	Buscar	Saber si algo existe	✅
+5	Transformar	Crear un array modificado	✅
+6	Filtrar	Quedarse con algunos elementos	✅
+7	Combinar	Filtrar + transformar	🟡
+8	Acumular	Calcular un total	✅
+9	Mínimo	Encontrar el valor más pequeño	✅
+
+El 7 lo usamos como ejercicio de combinación, aunque todavía no lo corregimos juntos. No hace falta volver atrás ahora; después podemos hacer uno similar para reforzarlo.
+
+🔵 Módulo 2 — Métodos de JavaScript
+
+Una vez que terminemos los patrones básicos, vamos a reemplazar nuestros for manuales por las herramientas que JavaScript nos da.
+
+Método	Reemplaza principalmente
+map()	Transformar
+filter()	Filtrar
+find()	Buscar un elemento
+some()	Comprobar si alguno cumple
+every()	Comprobar si todos cumplen
+reduce()	Acumular
+sort()	Ordenar
+includes()	Comprobar existencia
+
+La idea va a ser:
+
+Primero:       for + lógica
+                   ↓
+Después:       método de JavaScript
+                   ↓
+Finalmente:    saber CUÁNDO usar cada uno
+🟣 Módulo 3 — Objetos
+
+Vamos a trabajar con datos como los que realmente recibís de una API:
+
+{
+  id: 1,
+  name: "Mouse",
+  price: 100,
+  stock: 10
+}
+
+Aprenderemos:
+
+Propiedades
+Modificar propiedades
+Agregar propiedades
+Desestructuración
+Spread ...
+Arrays de objetos
+Objetos dentro de objetos
+🟠 Módulo 4 — Funciones
+
+Vamos a profundizar en:
+
+Parámetros
+return
+Scope
+Funciones flecha
+Callbacks
+Funciones como valores
+Funciones que reciben funciones
+(mdelo mejora para presentr problematica Ejercicio 17 — Clientes con compras grandes
+
+Una tienda quiere enviar una promoción especial a los clientes que hayan gastado más de $10.000 durante el mes.
+
+El sistema tiene estos datos:
+
+const customers = [
+  { name: "Ana", totalSpent: 8500 },
+  { name: "Carlos", totalSpent: 15000 },
+  { name: "Diego", totalSpent: 23000 },
+  { name: "Laura", totalSpent: 7000 }
+];
+Tu tarea
+
+Creá una función:
+
+function getVIPCustomers(customers) {
+
+}
+
+La función debe devolver un nuevo array solamente con los clientes que hayan gastado más de $10.000.
+
+Resultado esperado:
+
+[
+  { name: "Carlos", totalSpent: 15000 },
+  { name: "Diego", totalSpent: 23000 }
+]
+Restricciones
+
+Podés usar:
+
+for
+if
+push
+variables
+
+No uses todavía:
+
+filter()
+map()
+reduce()
+Importante
+
+No te digo qué patrón usar. Leé el problema y decidilo vos.
+
+Cuando termines, pasame tu código y lo revisamos.)
