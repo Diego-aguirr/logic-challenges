@@ -9,6 +9,7 @@ const categories = [
   { label: "Módulo 2", href: "/ejercicios?module=2", emoji: "🔵" },
   { label: "Módulo 3", href: "/ejercicios?module=3", emoji: "🟣" },
   { label: "Módulo 4", href: "/ejercicios?module=4", emoji: "🟠" },
+  { label: "Módulo 5", href: "/ejercicios?module=5", emoji: "🔴" },
 ];
 
 export function Header() {
