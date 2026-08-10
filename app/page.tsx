@@ -31,7 +31,7 @@ export default function Home() {
             <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
               for
             </code>{" "}
-            hasta funciones de orden superior.
+            hasta async/await y patrones de React.
           </p>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -56,9 +56,9 @@ export default function Home() {
       <section className="border-b border-border bg-muted/30 px-4 py-8">
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 sm:grid-cols-4">
           {[
-            { value: "31", label: "Ejercicios" },
-            { value: "4", label: "Módulos" },
-            { value: "28", label: "Patrones" },
+            { value: "46", label: "Ejercicios" },
+            { value: "5", label: "Módulos" },
+            { value: "43", label: "Patrones" },
             { value: "100%", label: "Gratis" },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
@@ -139,7 +139,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {[
               {
                 emoji: "🟢",
@@ -173,10 +173,18 @@ export default function Home() {
                 tag: "Nivel avanzado",
                 color: "orange",
               },
+              {
+                emoji: "🔴",
+                module: 5,
+                title: "JS Moderno",
+                desc: "Optional chaining, async/await, try/catch",
+                tag: "Preparación para React",
+                color: "red",
+              },
             ].map((m) => (
               <Link
                 key={m.module}
-                href="/ejercicios"
+                href={`/ejercicios?module=${m.module}`}
                 className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
                 <div className="mb-3 text-2xl">{m.emoji}</div>
@@ -223,7 +231,7 @@ export default function Home() {
                 icon: TrendingUp,
                 title: "Progresión gradual",
                 description:
-                  "Empezás con bucles simples y terminás con closures. Cada módulo se construye sobre el anterior.",
+                  "Empezás con bucles simples y terminás con async/await. Cada módulo se construye sobre el anterior.",
               },
               {
                 icon: Code2,

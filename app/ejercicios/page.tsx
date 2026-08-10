@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ExerciseList } from "@/components/exercises/ExerciseList";
 import { BookOpen, Target, TrendingUp } from "lucide-react";
 
@@ -8,7 +9,7 @@ export default function EjerciciosPage() {
       <div className="mb-10">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm text-primary">
           <BookOpen className="h-4 w-4" />
-          4 módulos — 31 ejercicios
+          5 módulos — 46 ejercicios
         </div>
         <h1 className="text-3xl font-bold text-foreground">Ejercicios</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
@@ -64,7 +65,9 @@ export default function EjerciciosPage() {
       </div>
 
       {/* Exercise list with filters */}
-      <ExerciseList />
+      <Suspense fallback={<div className="text-center py-8 text-muted-foreground">Cargando ejercicios...</div>}>
+        <ExerciseList />
+      </Suspense>
     </div>
   );
 }

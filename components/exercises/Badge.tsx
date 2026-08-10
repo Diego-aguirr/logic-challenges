@@ -36,6 +36,11 @@ const moduleConfig: Record<Module, { label: string; emoji: string; className: st
     emoji: "🟠",
     className: "bg-orange-500/10 text-orange-400 border-orange-500/20",
   },
+  5: {
+    label: "JS Moderno",
+    emoji: "🔴",
+    className: "bg-red-500/10 text-red-400 border-red-500/20",
+  },
 };
 
 const patternLabels: Record<Pattern, string> = {
@@ -74,6 +79,22 @@ const patternLabels: Record<Pattern, string> = {
   callbacks: "Callbacks",
   "funciones-valor": "Funciones como Valor",
   "funciones-reciben": "Funciones de Orden Superior",
+  // Módulo 5
+  "rest-params": "Rest Parameters",
+  "spread-array": "Spread Array",
+  "spread-object": "Spread Object",
+  "optional-chaining": "Optional Chaining",
+  "nullish-coalescing": "Nullish Coalescing",
+  "optional-nullish-combo": "Optional + Nullish",
+  "filter-map-chain": "Filter + Map Chain",
+  "reduce-group": "Reduce para Agrupar",
+  "flat-flatmap": "flatMap",
+  "spread-destructuring": "Spread + Destructuring",
+  "try-catch": "Try/Catch",
+  "json-parse": "JSON.parse",
+  "async-await": "Async/Await",
+  "async-retry": "Async Retry",
+  "validacion-formulario": "Validación de Formulario",
 };
 
 export function DifficultyBadge({ difficulty }: { difficulty: Difficulty }) {
