@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState, useCallback } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { exercises, getExerciseById } from "@/lib/exercises";
-import { Exercise } from "@/lib/exercises/types";
 import { runTests } from "@/lib/validation/runner";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { RunButton } from "@/components/editor/RunButton";
@@ -13,7 +12,6 @@ import { HintsSystem } from "@/components/validation/HintsSystem";
 import { SolutionToggle } from "@/components/validation/SolutionToggle";
 import {
   DifficultyBadge,
-  ModuleBadge,
   PatternBadge,
   ModuleLabel,
 } from "@/components/exercises/Badge";
@@ -32,7 +30,6 @@ import {
 
 export default function ExercisePage() {
   const params = useParams();
-  const router = useRouter();
   const id = params.id as string;
   const { markCompleted, isCompleted, loaded } = useProgress();
 

@@ -1,45 +1,44 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 const STORAGE_KEY = "logica-progress";
 
+function loadFromStorage(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+      return new Set(JSON.parse(stored) as string[]);
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return new Set();
+}
+
 export function useProgress() {
-  const [completed, setCompleted] = useState<Set<string>>(new Set());
-  const [loaded, setLoaded] = useState(false);
+  const [completed, setCompleted] = useState<Set<string>>(loadFromStorage);
 
-  // Load from localStorage on mount
-  useEffect(() => {
+  const saveToStorage = useCallback((next: Set<string>) => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored) as string[];
-        setCompleted(new Set(parsed));
-      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]));
     } catch {
-      // Ignore parse errors
+      // Ignore storage errors
     }
-    setLoaded(true);
   }, []);
 
-  // Save to localStorage when completed changes
-  useEffect(() => {
-    if (loaded) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify([...completed]));
-      } catch {
-        // Ignore storage errors
-      }
-    }
-  }, [completed, loaded]);
-
-  const markCompleted = useCallback((exerciseId: string) => {
-    setCompleted((prev) => {
-      const next = new Set(prev);
-      next.add(exerciseId);
-      return next;
-    });
-  }, []);
+  const markCompleted = useCallback(
+    (exerciseId: string) => {
+      setCompleted((prev) => {
+        const next = new Set(prev);
+        next.add(exerciseId);
+        saveToStorage(next);
+        return next;
+      });
+    },
+    [saveToStorage]
+  );
 
   const isCompleted = useCallback(
     (exerciseId: string) => completed.has(exerciseId),
@@ -47,26 +46,21 @@ export function useProgress() {
   );
 
   const getModuleProgress = useCallback(
-    (moduleId: number, total: number) => {
-      const moduleExercises = [...completed].filter((id) => {
-        // Extract module from exercise id pattern or count
-        return true; // We'll compute this differently
-      });
+    (_moduleId: number, total: number) => {
       return { completed: 0, total };
     },
-    [completed]
+    []
   );
 
   const getStats = useCallback(() => {
     return {
       total: completed.size,
-      // We'll compute per-module stats in the component
     };
   }, [completed]);
 
   return {
     completed,
-    loaded,
+    loaded: true,
     markCompleted,
     isCompleted,
     getModuleProgress,
