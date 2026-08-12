@@ -62,10 +62,17 @@ export interface Restrictions {
   cant: string[];
 }
 
+export interface MethodCall {
+  method: string;
+  args: unknown[];
+}
+
 export interface TestCase {
   args: unknown[];
   expected: unknown;
   description: string;
+  methodCalls?: MethodCall[];
+  fnArgs?: unknown[];
 }
 
 export interface Exercise {

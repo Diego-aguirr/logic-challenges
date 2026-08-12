@@ -13,11 +13,8 @@ export function runInSandbox(
     iframe.sandbox = "allow-scripts";
 
     const results: TestResult[] = [];
-    let timedOut = false;
-    const startTime = Date.now();
 
     const timeout = setTimeout(() => {
-      timedOut = true;
       cleanup();
       resolve({
         results: testCases.map((tc) => ({
@@ -74,7 +71,7 @@ export function runInSandbox(
 
     const testCasesCode = testCases
       .map(
-        (tc, i) => `
+        (tc) => `
       try {
         const result = ${functionName}(${JSON.stringify(tc.args).slice(1, -1)});
         // Handle async functions
