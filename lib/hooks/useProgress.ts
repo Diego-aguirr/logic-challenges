@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { exercises } from "@/lib/exercises";
 
 const STORAGE_KEY = "logica-progress";
 
@@ -46,10 +47,14 @@ export function useProgress() {
   );
 
   const getModuleProgress = useCallback(
-    (_moduleId: number, total: number) => {
-      return { completed: 0, total };
+    (moduleId: number) => {
+      const moduleExercises = exercises.filter((ex) => ex.module === moduleId);
+      const completedCount = moduleExercises.filter((ex) =>
+        completed.has(ex.id)
+      ).length;
+      return { completed: completedCount, total: moduleExercises.length };
     },
-    []
+    [completed]
   );
 
   const getStats = useCallback(() => {

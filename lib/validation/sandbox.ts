@@ -2,6 +2,17 @@ import { ExecutionResult, TestResult } from "@/lib/exercises/types";
 
 const TIMEOUT_MS = 5000;
 
+function escapeScript(str: string): string {
+  return str.replace(/<\/script>/gi, "<\\/script>");
+}
+
+function serializeValue(value: unknown): string {
+  if (typeof value === "function") {
+    return escapeScript(value.toString());
+  }
+  return escapeScript(JSON.stringify(value));
+}
+
 export function runInSandbox(
   userCode: string,
   functionName: string,
@@ -73,40 +84,44 @@ export function runInSandbox(
       .map(
         (tc) => `
       try {
-        const result = ${functionName}(${JSON.stringify(tc.args).slice(1, -1)});
+        const result = ${functionName}(${tc.args.map(serializeValue).join(", ")});
         // Handle async functions
         if (result && typeof result.then === 'function') {
           const p = result.then(res => {
-            const pass = JSON.stringify(res) === JSON.stringify(${JSON.stringify(tc.expected)});
+            const pass = JSON.stringify(res) === JSON.stringify(${serializeValue(
+              tc.expected
+            )});
             testResults.push({
-              testName: ${JSON.stringify(tc.description)},
+              testName: ${serializeValue(tc.description)},
               pass,
-              expected: ${JSON.stringify(tc.expected)},
+              expected: ${serializeValue(tc.expected)},
               actual: res
             });
           }).catch(e => {
             testResults.push({
-              testName: ${JSON.stringify(tc.description)},
+              testName: ${serializeValue(tc.description)},
               pass: false,
-              expected: ${JSON.stringify(tc.expected)},
+              expected: ${serializeValue(tc.expected)},
               error: e.message
             });
           });
           promises.push(p);
         } else {
-          const pass = JSON.stringify(result) === JSON.stringify(${JSON.stringify(tc.expected)});
+          const pass = JSON.stringify(result) === JSON.stringify(${serializeValue(
+            tc.expected
+          )});
           testResults.push({
-            testName: ${JSON.stringify(tc.description)},
+            testName: ${serializeValue(tc.description)},
             pass,
-            expected: ${JSON.stringify(tc.expected)},
+            expected: ${serializeValue(tc.expected)},
             actual: result
           });
         }
       } catch (e) {
         testResults.push({
-          testName: ${JSON.stringify(tc.description)},
+          testName: ${serializeValue(tc.description)},
           pass: false,
-          expected: ${JSON.stringify(tc.expected)},
+          expected: ${serializeValue(tc.expected)},
           error: e.message
         });
       }
@@ -121,13 +136,13 @@ export function runInSandbox(
 <script>
   const testResults = [];
   const promises = [];
-  
+
   function postResults() {
     postMessage({ type: 'sandbox-result', results: testResults });
   }
-  
+
   try {
-    ${userCode}
+    ${escapeScript(userCode)}
 
     const fn = typeof ${functionName} === 'function' ? ${functionName} : null;
     if (!fn) {
@@ -150,7 +165,7 @@ export function runInSandbox(
       results: [{ testName: 'Sintaxis', pass: false, error: e.message }]
     });
   }
-</script>
+<\/script>
 </body>
 </html>`;
 

@@ -5,11 +5,11 @@ import { useState } from "react";
 import { Menu, X, Code2 } from "lucide-react";
 
 const categories = [
-  { label: "Módulo 1", href: "/ejercicios?module=1", emoji: "🟢" },
-  { label: "Módulo 2", href: "/ejercicios?module=2", emoji: "🔵" },
-  { label: "Módulo 3", href: "/ejercicios?module=3", emoji: "🟣" },
-  { label: "Módulo 4", href: "/ejercicios?module=4", emoji: "🟠" },
-  { label: "Módulo 5", href: "/ejercicios?module=5", emoji: "🔴" },
+  { label: "Módulo 1", href: "/ejercicios/modulo/1", emoji: "🟢" },
+  { label: "Módulo 2", href: "/ejercicios/modulo/2", emoji: "🔵" },
+  { label: "Módulo 3", href: "/ejercicios/modulo/3", emoji: "🟣" },
+  { label: "Módulo 4", href: "/ejercicios/modulo/4", emoji: "🟠" },
+  { label: "Módulo 5", href: "/ejercicios/modulo/5", emoji: "🔴" },
 ];
 
 export function Header() {

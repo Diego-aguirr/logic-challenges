@@ -14,7 +14,7 @@ export const module1: Exercise[] = [
     context:
       "En tu tienda online necesitás generar una lista de todos los productos disponibles para mostrar en la página principal. Cada producto está guardado como nombre en un array y debés recorrerlo completo.",
     description:
-      "Dado un array de strings con nombres de productos, devolvé el mismo array sin modificarlo. Es el primer paso para aprender a recorrer un array.",
+      "Dado un array de strings con nombres de productos, devolvé un nuevo array con los mismos elementos usando un bucle for. Es el primer paso para aprender a recorrer un array.",
     example: {
       input: 'mostrarProductos(["Mouse", "Teclado", "Monitor"])',
       output: '["Mouse", "Teclado", "Monitor"]',
@@ -31,7 +31,13 @@ export const module1: Exercise[] = [
     learningObjective:
       "Patrón recorrer: aprender a iterar sobre un array con un bucle for y acceder a cada elemento por su índice.",
     starterCode: `function mostrarProductos(productos) {\n  // tu código acá\n\n}`,
-    solution: `function mostrarProductos(productos) {\n  return productos;\n}`,
+    solution: `function mostrarProductos(productos) {
+  const resultado = [];
+  for (let i = 0; i < productos.length; i++) {
+    resultado.push(productos[i]);
+  }
+  return resultado;
+}`,
     testCases: [
       {
         args: [["Mouse", "Teclado", "Monitor"]],
