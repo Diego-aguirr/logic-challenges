@@ -19,7 +19,9 @@ app/                        # Server Components por defecto
   globals.css               # Tailwind v4 + variables CSS (dark theme only)
   ejercicios/
     page.tsx                # Browser de ejercicios (server, wrapping ExerciseList)
-    [id]/page.tsx           # Workspace del ejercicio ← EL ÚNICO CLIENT COMPONENT de páginas
+    [id]/page.tsx           # Workspace del ejercicio ← CLIENT COMPONENT
+    modulo/
+      [module]/page.tsx     # Vista por módulo con progreso del módulo
 
 components/
   editor/                   # CodeEditor, RunButton, OutputPanel
@@ -34,11 +36,14 @@ lib/
     index.ts                # Barrel: agrega módulos + helpers (getExerciseById, etc.)
     modules/                # module1.ts — module5.ts (ejercicios por módulo)
   hooks/
-    useProgress.ts          # Progreso en localStorage
+    useProgress.ts          # Progreso en localStorage (getModuleProgress ya funciona)
   validation/
-    runner.ts               # Test runner PRODUCCIÓN (new Function)
-    sandbox.ts              # Runner alternativo con iframe (NO SE USA)
+    sandbox.ts              # Test runner PRODUCCIÓN (iframe sandbox + timeout 5s)
   utils.ts                  # cn() = clsx + tailwind-merge
+
+.github/
+  workflows/
+    deploy.yml              # CI/CD: deploy a Vercel + limpieza de ramas
 
 test-all.mjs                # Test harness: valida TODOS los ejercicios con sus soluciones
 test-debug.mjs              # Debug de ejercicios específicos
@@ -49,7 +54,7 @@ test-module5.mjs            # Tests del módulo 5
 
 ```
 moduleN.ts  →  index.ts (exercises[])  →  getExerciseById(id)  →  page.tsx
-                                                                →  runner.ts (new Function)
+                                                                →  sandbox.ts (iframe sandbox)
                                                                 →  OutputPanel
 ```
 
@@ -57,7 +62,7 @@ moduleN.ts  →  index.ts (exercises[])  →  getExerciseById(id)  →  page.tsx
 2. `index.ts` los concatena: `export const exercises = [...module1, ...module2, ...]`
 3. `[id]/page.tsx` busca el ejercicio por URL param
 4. El usuario escribe código en `CodeEditor`
-5. Al ejecutar: `runTests(code, exercise.functionName, exercise.testCases)`
+5. Al ejecutar: `runInSandbox(code, exercise.functionName, exercise.testCases)`
 6. Si pasa todo: `markCompleted(exercise.id)` → localStorage
 
 ## Convenciones de naming
@@ -140,29 +145,39 @@ export function CodeEditor({ value, onChange, onKeyDown }: CodeEditorProps) { ..
 - **`cn()`** para clases condicionales: `cn("base", isActive && "active", className)`
 - **Editor:** Colores hardcoded `bg-[#1a1b26]` (no theme tokens)
 
-## Test runner — Cómo funciona y sus limitaciones
+## Test runner — Sandbox seguro con iframe
 
-### Producción (`runner.ts`)
+### Producción (`sandbox.ts`)
 
 ```typescript
-runTests(userCode, functionName, testCases) → ExecutionResult
+runInSandbox(userCode, functionName, testCases) → Promise<ExecutionResult>
 ```
 
-1. Envuelve el código del usuario en `new Function()`
-2. Llama `fn(...tc.args)` sincrónicamente
-3. Compara con `JSON.stringify(result) === JSON.stringify(expected)`
-4. `timedOut` siempre es `false` (sin protección de timeout)
+1. Crea un `<iframe sandbox="allow-scripts">` en el DOM
+2. Inyecta el código del usuario + test cases en el HTML del iframe
+3. El código corre en un **origen opaco** (no puede acceder a `localStorage`, `document.cookie`, ni al DOM padre)
+4. Escucha `postMessage` para recibir resultados
+5. Tiene **timeout de 5 segundos** — si el código se cuelga, se destruye el iframe y se marca como `timedOut`
+6. Maneja funciones async: detecta `.then` y hace `await` dentro del iframe
 
-### Limitaciones CRÍTICAS del runner de producción
+### Seguridad
+
+| Amenaza | Protección |
+|---------|-----------|
+| Lectura de `localStorage` | ❌ Iframe sandbox corre en origen opaco |
+| Exfiltración vía `fetch` | ❌ No puede acceder a cookies del padre |
+| Manipulación del DOM | ❌ No puede tocar el DOM de la app |
+| Loop infinito | ✅ Timeout de 5s destruye el iframe |
+| `eval()` / `new Function()` en main thread | ❌ Eliminado. Solo corre en el iframe |
+
+### Limitaciones actuales
 
 | Limitación | Impacto |
 |-----------|---------|
 | **No maneja `methodCalls`** | Ejercicios de closures (`crear-contador`) NO se validan en el browser |
 | **No maneja `fnArgs`** | Ejercicios que devuelven funciones (`obtener-operacion`) NO se validan en el browser |
-| **No maneja async** | Ejercicios con `async/await` (`async-await-fetch`, `async-retry`) NO se validan en el browser |
-| **Sin timeout** | Código infinito bloquea el browser |
-| **Sin aislamiento** | `new Function()` corre en el mismo contexto que la app |
 | **`JSON.stringify` comparison** | Falla con `undefined` vs `null`, orden de propiedades, referencias a funciones |
+| **`</script>` en args** | Escapado con `escapeScript()`, pero seguir siendo cauteloso |
 
 ### Test harness (`test-all.mjs`) — SÍ maneja todo
 
@@ -174,13 +189,9 @@ El script de testing tiene su propia función `runInSandbox` que:
 
 **⚠️ Inconsistencia importante:** Lo que pasa en `test-all.mjs` NO necesariamente pasa en el browser. Si agregás un ejercicio que usa `methodCalls`, `fnArgs` o `async`, el test script lo validará pero el usuario NO podrá validarlo en la app.
 
-### `sandbox.ts` — Código muerto
+### `runner.ts` — Eliminado
 
-Existe un runner alternativo con iframe sandbox + `postMessage` + timeout de 5s. **NO está importado por ninguna página.** Es código muerto o un plan a futuro.
-
-### `workers/` — Directorio vacío
-
-Placeholder para un futuro web worker-based sandbox.
+El runner anterior usaba `new Function()` sin sandbox. Fue eliminado por seguridad. `sandbox.ts` es el único runner activo.
 
 ## Cómo agregar un ejercicio
 
@@ -243,25 +254,17 @@ Placeholder para un futuro web worker-based sandbox.
 
 ## Bugs conocidos y deuda técnica
 
-1. **`runner.ts` no valida closures/async en el browser** — La limitación más grande. Los ejercicios de módulo 4 y 5 que usan `methodCalls`, `fnArgs` o `async` solo pasan en `test-all.mjs`, no en la app.
+1. **`sandbox.ts` no maneja `methodCalls` / `fnArgs` / `async` closures** — Los ejercicios de módulo 4 y 5 que usan estas features solo pasan en `test-all.mjs`, no en la app. Es la limitación más grande.
 
-2. **`getModuleProgress` es un stub** — Siempre retorna `{ completed: 0, total }`. Nunca calcula el progreso real por módulo.
+2. **`data.ts` es código muerto** — Archivo monolítico de 2495 líneas que duplica todos los ejercicios. `index.ts` importa de `modules/`, no de `data.ts`.
 
-3. **`data.ts` es código muerto** — Archivo monolítico de 2495 líneas que duplica todos los ejercicios. `index.ts` importa de `modules/`, no de `data.ts`.
+3. **`workers/` vacío** — Placeholder sin implementar.
 
-4. **`sandbox.ts` no se usa** — Runner alternativo con iframe que nunca se conectó a la app.
+4. **No hay error boundary** — Si el iframe sandbox falla inesperadamente, no hay React error boundary que atrape el crash.
 
-5. **`workers/` vacío** — Placeholder sin implementar.
+5. **No se persiste el código** — Refrescar la página pierde el código en progreso (solo se guarda el progreso de ejercicios completados).
 
-6. **`async-retry` usa `eval()`** — Pasa un string como argumento de función porque JSON serialization pierde referencias a funciones.
-
-7. **Caracteres chinos en `validacion-formulario`** — Restricciones con `"❌正则表达式"` deberían estar en español.
-
-8. **No hay error boundary** — Si `new Function()` falla inesperadamente, no hay React error boundary que atrape el crash.
-
-9. **No se persiste el código** — Refrescar la página pierde el código en progreso (solo se guarda el progreso de ejercicios completados).
-
-10. **Sin protección de timeout en producción** — Código infinito bloquea el browser (el sandbox.ts tenía 5s timeout pero no se usa).
+6. **`async-retry` usa `eval()` en la solución** — Arreglado: la solución ya no usa `eval()`, pero el test harness aún necesita reconstruir funciones desde strings para ejercicios con funciones como argumentos.
 
 ## Comandos
 

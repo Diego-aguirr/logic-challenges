@@ -4,7 +4,8 @@ import { useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { exercises, getExerciseById } from "@/lib/exercises";
-import { runTests } from "@/lib/validation/runner";
+import { runInSandbox } from "@/lib/validation/sandbox";
+import { ExecutionResult } from "@/lib/exercises/types";
 import { CodeEditor } from "@/components/editor/CodeEditor";
 import { RunButton } from "@/components/editor/RunButton";
 import { OutputPanel } from "@/components/editor/OutputPanel";
@@ -35,9 +36,7 @@ export default function ExercisePage() {
 
   const exercise = getExerciseById(id);
   const [code, setCode] = useState(exercise?.starterCode || "");
-  const [result, setResult] = useState<ReturnType<typeof runTests> | null>(
-    null
-  );
+  const [result, setResult] = useState<ExecutionResult | null>(null);
   const [isRunning, setIsRunning] = useState(false);
   const [showExample, setShowExample] = useState(false);
   const [showContext, setShowContext] = useState(true);
@@ -48,20 +47,25 @@ export default function ExercisePage() {
   const nextExercise =
     currentIndex < exercises.length - 1 ? exercises[currentIndex + 1] : null;
 
-  const handleRun = useCallback(() => {
+  const handleRun = useCallback(async () => {
     if (!exercise || !code.trim()) return;
 
     setIsRunning(true);
-    setTimeout(() => {
-      const res = runTests(code, exercise.functionName, exercise.testCases);
+    try {
+      const res = await runInSandbox(
+        code,
+        exercise.functionName,
+        exercise.testCases
+      );
       setResult(res);
-      setIsRunning(false);
 
       // Mark as completed if all tests pass
       if (res.passed === res.total && res.total > 0) {
         markCompleted(exercise.id);
       }
-    }, 100);
+    } finally {
+      setIsRunning(false);
+    }
   }, [exercise, code, markCompleted]);
 
   const handleKeyDown = useCallback(

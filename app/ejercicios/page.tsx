@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { ExerciseList } from "@/components/exercises/ExerciseList";
-import { BookOpen, Target, TrendingUp } from "lucide-react";
+import { BookOpen } from "lucide-react";
 
 export default function EjerciciosPage() {
   return (
@@ -24,44 +24,6 @@ export default function EjerciciosPage() {
           , después con los métodos de JavaScript. Cada ejercicio tiene
           restricciones para que aprendas la lógica antes de la abreviatura.
         </p>
-      </div>
-
-      {/* Learning path info */}
-      <div className="mb-10 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-border bg-card p-4">
-          <div className="mb-2 flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            <h3 className="text-sm font-semibold text-foreground">
-              Restricciones
-            </h3>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Cada ejercicio te dice qué podés y qué no podés usar. Así aprendés
-            la lógica antes de los atajos.
-          </p>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-4">
-          <div className="mb-2 flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-primary" />
-            <h3 className="text-sm font-semibold text-foreground">
-              Progresión
-            </h3>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Los módulos se construyen uno sobre otro. Arrancá con el 1 y andá
-            subiendo.
-          </p>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-4">
-          <div className="mb-2 flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary" />
-            <h3 className="text-sm font-semibold text-foreground">Pistas</h3>
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Si te trabás, usá las pistas. Primero una pregunta, después más
-            detalle. Sin darte la respuesta.
-          </p>
-        </div>
       </div>
 
       {/* Exercise list with filters */}

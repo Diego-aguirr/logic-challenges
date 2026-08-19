@@ -707,12 +707,9 @@ export const module5: Exercise[] = [
       "Patrón retry: reintentar operaciones asíncronas fallidas, patrón real en apps que dependen de APIs inestables.",
     starterCode: `async function conReintentos(funcion, maxReintentos) {\n  // tu código acá\n\n}`,
     solution: `async function conReintentos(funcion, maxReintentos) {
-  // Convert string to function for testing
-  const fn = typeof funcion === 'string' ? eval(funcion) : funcion;
-  
   for (let i = 0; i < maxReintentos; i++) {
     try {
-      return await fn();
+      return await funcion();
     } catch (e) {
       continue;
     }
@@ -722,7 +719,7 @@ export const module5: Exercise[] = [
     testCases: [
       {
         args: [
-          "async () => 'ok'",
+          async () => "ok",
           3,
         ],
         expected: "ok",
@@ -730,7 +727,9 @@ export const module5: Exercise[] = [
       },
       {
         args: [
-          "async () => { throw new Error('fail') }",
+          async () => {
+            throw new Error("fail");
+          },
           2,
         ],
         expected: null,
@@ -748,14 +747,14 @@ export const module5: Exercise[] = [
     context:
       "Tu form de registro tiene nombre, email y contraseña. Necesitás validar todo junto y devolver errores claros. Este ejercicio usa TODO lo que aprendiste.",
     description:
-      "Dado un objeto {name, email, password}, devolvé un objeto con errores. Si no hay errores, devolvé {}. Las reglas: name不能为空, email debe contener @, password mínimo 6 caracteres.",
+      "Dado un objeto {name, email, password}, devolvé un objeto con errores. Si no hay errores, devolvé {}. Las reglas: name no puede estar vacío, email debe contener @, password mínimo 6 caracteres.",
     example: {
       input: 'validarFormulario({name: "", email: "invalido", password: "123"})',
       output: '{name: "Requerido", email: "Email inválido", password: "Mínimo 6 caracteres"}',
     },
     restrictions: {
       can: ["✅ todo lo aprendido", "✅ objectos", "✅ strings", "✅ condicionales"],
-      cant: ["❌ bibliotecas externas", "❌正则表达式", "❌第三方验证库"],
+      cant: ["❌ bibliotecas externas", "❌ expresiones regulares", "❌ librerías de terceros"],
     },
     hints: [
       "¿Qué tipo de variable acumula los errores: array u objeto?",

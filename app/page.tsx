@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code2, Zap, CheckCircle, ArrowRight, BookOpen, Target, TrendingUp, Sparkles } from "lucide-react";
+import { Code2, Zap, ArrowRight, BookOpen, Sparkles } from "lucide-react";
 
 export default function Home() {
   return (
@@ -184,7 +184,7 @@ export default function Home() {
             ].map((m) => (
               <Link
                 key={m.module}
-                href={`/ejercicios?module=${m.module}`}
+                href={`/ejercicios/modulo/${m.module}`}
                 className="group rounded-xl border border-border bg-card p-5 transition-all hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               >
                 <div className="mb-3 text-2xl">{m.emoji}</div>
@@ -196,74 +196,6 @@ export default function Home() {
                   {m.tag}
                 </span>
               </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="px-4 py-20 sm:py-24">
-        <div className="mx-auto max-w-4xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-2xl font-bold text-foreground sm:text-3xl">
-              ¿Por qué Lógica?
-            </h2>
-            <p className="text-muted-foreground">
-              Diseñado para aprender de verdad, no para sentir que aprendés
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                icon: Target,
-                title: "Restricciones reales",
-                description:
-                  "Cada ejercicio te obliga a usar solo ciertas herramientas. Así aprendés la lógica antes de la abreviatura.",
-              },
-              {
-                icon: Zap,
-                title: "Feedback instantáneo",
-                description:
-                  "Ejecutá tu código y conocé al toque si está bien. Sin compilar, sin esperas, sin excusas.",
-              },
-              {
-                icon: TrendingUp,
-                title: "Progresión gradual",
-                description:
-                  "Empezás con bucles simples y terminás con async/await. Cada módulo se construye sobre el anterior.",
-              },
-              {
-                icon: Code2,
-                title: "Contexto real",
-                description:
-                  "Cada ejercicio simula un problema real de desarrollo. No es 'sumá dos números', es 'filtrá productos de un e-commerce'.",
-              },
-              {
-                icon: BookOpen,
-                title: "Pistas progresivas",
-                description:
-                  "Si te trabás, dale a 'Ver pista'. Primero una pregunta, después más detalle. Sin darte la respuesta.",
-              },
-              {
-                icon: CheckCircle,
-                title: "Progreso guardado",
-                description:
-                  "Tu avance se guarda automáticamente. Volvé cuando quieras, seguí donde dejaste.",
-              },
-            ].map((feature) => (
-              <div
-                key={feature.title}
-                className="rounded-xl border border-border bg-card p-6 transition-all hover:border-primary/30"
-              >
-                <feature.icon className="mb-4 h-8 w-8 text-primary" />
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {feature.description}
-                </p>
-              </div>
             ))}
           </div>
         </div>

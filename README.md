@@ -138,7 +138,7 @@ Cada ejercicio incluye:
 | Styling | Tailwind CSS v4 + shadcn/ui (base-nova) |
 | Iconos | Lucide React |
 | Editor | Textarea con números de línea y soporte Tab |
-| Validación | Custom test runner (`new Function`) |
+| Validación | Iframe sandbox con timeout de 5s |
 | Estado | localStorage (sin backend) |
 | Fuentes | Inter (sans) + JetBrains Mono (mono) |
 
@@ -151,7 +151,9 @@ app/
 ├── globals.css             # Tailwind v4 + shadcn/ui theme
 └── ejercicios/
     ├── page.tsx            # Browser de ejercicios con filtros
-    └── [id]/page.tsx       # Vista de ejercicio individual
+    ├── [id]/page.tsx       # Vista de ejercicio individual
+    └── modulo/
+        └── [module]/page.tsx # Vista por módulo con progreso
 components/
 ├── layout/                 # Header, Footer
 ├── exercises/              # ExerciseCard, ExerciseList, Badge
@@ -166,8 +168,7 @@ lib/
 ├── hooks/
 │   └── useProgress.ts      # Progreso en localStorage
 ├── validation/
-│   ├── runner.ts           # Test runner con new Function()
-│   └── sandbox.ts          # Runner alternativo con iframe (no activo)
+│   └── sandbox.ts          # Test runner con iframe sandbox
 └── utils.ts                # cn() utility (clsx + tailwind-merge)
 ```
 
@@ -187,6 +188,22 @@ npx tsx test-all.mjs       # Testea todos los ejercicios (46)
 npx tsx test-module5.mjs   # Testea solo el módulo 5
 npx tsx test-debug.mjs     # Debug de ejercicios específicos
 ```
+
+## Deploy
+
+El proyecto usa un workflow de GitHub Actions (`.github/workflows/deploy.yml`) que:
+
+- Hace **deploy automático a Vercel** en cada push a `main`
+- **Borra ramas mergeadas** automáticamente después del deploy
+- **Mantiene una rama `develop`** sincronizada con `main`
+
+Para configurarlo, agregá estos secrets en GitHub → Settings → Secrets → Actions:
+
+| Secret | Descripción |
+|--------|-------------|
+| `VERCEL_TOKEN` | Token de Vercel (vercel.com/account/tokens) |
+| `VERCEL_ORG_ID` | Org ID del proyecto |
+| `VERCEL_PROJECT_ID` | Project ID del proyecto |
 
 ## Contribuir
 

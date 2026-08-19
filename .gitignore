@@ -55,7 +55,9 @@ openspec/
 .agents/
 .micode/
 
-# Debug
+# Junk files (no extension artifacts in root)
+/ejercicios
+/ejercicios 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
