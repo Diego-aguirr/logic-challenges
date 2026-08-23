@@ -138,7 +138,7 @@ export function runInSandbox(
   const promises = [];
 
   function postResults() {
-    postMessage({ type: 'sandbox-result', results: testResults });
+    parent.postMessage({ type: 'sandbox-result', results: testResults }, '*');
   }
 
   try {
@@ -146,10 +146,10 @@ export function runInSandbox(
 
     const fn = typeof ${functionName} === 'function' ? ${functionName} : null;
     if (!fn) {
-      postMessage({
+      parent.postMessage({
         type: 'sandbox-result',
         results: [{ testName: 'Sintaxis', pass: false, error: 'No se encontró la función ${functionName}' }]
-      });
+      }, '*');
     } else {
       ${testCasesCode}
       // Wait for all promises to resolve before posting results
@@ -160,10 +160,10 @@ export function runInSandbox(
       }
     }
   } catch (e) {
-    postMessage({
+    parent.postMessage({
       type: 'sandbox-result',
       results: [{ testName: 'Sintaxis', pass: false, error: e.message }]
-    });
+    }, '*');
   }
 <\/script>
 </body>
