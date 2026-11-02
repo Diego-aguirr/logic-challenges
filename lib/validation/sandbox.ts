@@ -7,6 +7,9 @@ function escapeScript(str: string): string {
 }
 
 function serializeValue(value: unknown): string {
+  if (value === undefined) {
+    return "undefined";
+  }
   if (typeof value === "function") {
     return escapeScript(value.toString());
   }
