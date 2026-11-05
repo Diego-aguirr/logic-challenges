@@ -320,7 +320,7 @@ export const module3: Exercise[] = [
     context:
       "Tu sistema de envíos necesita generar la dirección completa del cliente para la etiqueta de envío. La dirección está guardada como un objeto anidado dentro del objeto cliente.",
     description:
-      "Dado un objeto cliente con una propiedad address anidada {city, street, number}, devolvé un string con el formato: 'Calle [street] [number], [city]'.",
+      "Dado un objeto cliente con una propiedad address anidada {city, street, number}, devolvé un string con el formato: '[street] [number], [city]'.",
     example: {
       input:
         'direccionCliente({name: "Juan", address: {street: "Av. Libertador", number: 1234, city: "Buenos Aires"}})',
