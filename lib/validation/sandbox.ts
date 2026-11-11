@@ -16,10 +16,18 @@ function serializeValue(value: unknown): string {
   return escapeScript(JSON.stringify(value));
 }
 
+export interface SandboxTestCase {
+  args: unknown[];
+  expected: unknown;
+  description: string;
+  methodCalls?: { method: string; args: unknown[] }[];
+  fnArgs?: unknown[];
+}
+
 export function runInSandbox(
   userCode: string,
   functionName: string,
-  testCases: { args: unknown[]; expected: unknown; description: string }[]
+  testCases: SandboxTestCase[]
 ): Promise<ExecutionResult> {
   return new Promise((resolve) => {
     const iframe = document.createElement("iframe");
@@ -87,7 +95,30 @@ export function runInSandbox(
       .map(
         (tc) => `
       try {
-        const result = ${functionName}(${tc.args.map(serializeValue).join(", ")});
+        const baseResult = ${functionName}(${tc.args.map(serializeValue).join(", ")});
+        let result;
+        ${tc.fnArgs
+          ? `
+        if (typeof baseResult === 'function') {
+          result = baseResult(${tc.fnArgs.map(serializeValue).join(", ")});
+        } else {
+          result = baseResult;
+        }
+      `
+          : tc.methodCalls
+            ? `
+        ${tc.methodCalls.length === 0
+          ? `result = baseResult.getCount ? baseResult.getCount() : undefined;`
+          : tc.methodCalls
+              .map(
+                (call) =>
+                  `result = baseResult.${call.method}(${call.args.map(serializeValue).join(", ")});`
+              )
+              .join("\n")}
+      `
+            : `
+        result = baseResult;
+      `}
         // Handle async functions
         if (result && typeof result.then === 'function') {
           const p = result.then(res => {
